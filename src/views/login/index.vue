@@ -2,7 +2,7 @@
   <div class="login-page">
     <langselect class="lang" />
     <el-tooltip class="svg-github" effect="dark" content="Fork Me" placement="bottom">
-      <a href="https://github.com/Sakuyakun/vue-eden"><icon name="github" :scale="2.5"></icon></a>
+      <a href="https://github.com/Yuer-shizi/vue-eden"><icon name="github" :scale="2.5"></icon></a>
     </el-tooltip>
     
     <div class="login-wrap">
