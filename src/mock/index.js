@@ -1,7 +1,7 @@
 import Mock from 'mockjs'
 import loginAPI from './login'
 
-const openMock = false
+const openMock = true
 
 if (openMock) {
   Mock.mock(/\/login\/login/, 'post', loginAPI.loginbyUser)
