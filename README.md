@@ -48,17 +48,14 @@ vue-eden 是一个美观的后台管理系统模板，简称 Eden（伊甸园）
 
 ```
 .
-├── LICENSE
 ├── README.md
-├── docs
-│   └── docs.md
 ├── package-lock.json
 ├── package.json
 ├── public
 │   ├── favicon.ico
 │   └── index.html
 ├── src
-│   ├── App.vue         
+│   ├── App.vue        程序入口
 │   ├── api            请求接口
 │   ├── assets         静态资源
 │   ├── components     组件
@@ -66,13 +63,12 @@ vue-eden 是一个美观的后台管理系统模板，简称 Eden（伊甸园）
 │   ├── main.js        入口文件
 │   ├── mock           MOCK 数据
 │   ├── router         路由
+│   │   ├── asyncRouterMap.js   右侧菜单数据
 │   ├── store          Store
 │   ├── svg            svg 存放目录
 │   ├── theme          主题色 css
 │   ├── utils          辅助工具方法
 │   └── views          页面
-├── template
-│   └── index.vue
 └── vue.config.js      vue-cli3 配置文件
 ```
 
