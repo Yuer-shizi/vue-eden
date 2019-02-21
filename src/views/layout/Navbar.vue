@@ -26,7 +26,7 @@
     </div>
 
     <div class="right-area">
-      <lang-select class="lang" />
+      <!-- <lang-select class="lang" /> -->
       <notice />
       <fullscreen class="fullscreen" />
       <infodrop />
@@ -37,7 +37,7 @@
 <script>
 import fullscreen from '@/components/fullscreen'
 import notice from '@/components/notice'
-import langselect from '@/components/langselect'
+// import langselect from '@/components/langselect'
 import infodrop from './NavbarInfoDrop'
 import seamlessList from '@/components/seamlessList'
 import breadcrumb from '@/components/breadcrumb'
@@ -50,7 +50,7 @@ export default {
     notice,
     infodrop,
     breadcrumb,
-    'lang-select': langselect,
+    // 'lang-select': langselect,
     'seamless-list': seamlessList
   },
   mounted() {
@@ -102,7 +102,7 @@ right-area-width = 250px
 
   .left-area
     min-width 240px
-    padding-left 12px
+    padding-left 22px
     box-sizing border-box
   
   .middle-area

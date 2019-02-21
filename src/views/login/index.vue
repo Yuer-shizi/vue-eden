@@ -187,6 +187,7 @@ export default {
                 duration: 10000,
                 showClose: true
               })
+              this.loading = false
             }
           } catch (error) {
             throw new Error(error)

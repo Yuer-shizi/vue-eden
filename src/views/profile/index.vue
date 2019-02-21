@@ -122,7 +122,7 @@ const feedmock = [
 const visitHistoryMock = [
   '权限控制',
   '首页',
-  '控件',
+  '控件123',
   '个人中心',
   '表格展示',
   '组件展示',

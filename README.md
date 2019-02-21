@@ -81,15 +81,15 @@ vue-eden 是一个美观的后台管理系统模板，简称 Eden（伊甸园）
 执行 serve 脚本将自动启动 http://localhost:8863
 
 ```
-# install dependency
+# install dependency 安装依赖
 npm install
 
-# develop
+# develop 运行
 npm run serve 
 
-# build for production environment
+# build for production environment 打包
 npm run build
 
-# lint
-npm run lint
+# lint 运行 ESlint 格式化
+npm run lint 
 ```

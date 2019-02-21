@@ -1,12 +1,19 @@
 <template>
-  <el-badge is-dot class="notice-area">
+  <el-badge @click.native="jumpToProfile" :value="_" class="notice-area">
     <icon name="notice" :scale="2.8"></icon>
   </el-badge>
 </template>
 
 <script>
 export default {
-  name: 'demo'
+  name: 'demo',
+  methods: {
+    jumpToProfile() {
+      this.$router.push({
+        path: '/profile/index'
+      })
+    }
+  }
 }
 </script>
 
