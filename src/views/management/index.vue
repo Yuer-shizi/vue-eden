@@ -1,12 +1,12 @@
 <template>
   <div>
-    components page1
+    manager page
   </div>
 </template>
 
 <script>
 export default {
-  name: 'componentspage1'
+  name: 'managerpage'
 }
 </script>
 

@@ -1,21 +1,22 @@
 <template>
   <el-breadcrumb class="eden-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
-      <div v-for="(item, index) in list" :key="item.path">
-        <el-breadcrumb-item
-          v-if="item.meta.title">
-          <span 
-            class="no-redirect"
-            v-if="item.redirect === 'noredirect' || index === item.length - 1">
-            {{getTitle(item.meta.title)}}
-          </span>
-          <router-link
-            v-else
-            :to="item.redirect || item.path">
-            {{getTitle(item.meta.title)}}
-          </router-link>
-        </el-breadcrumb-item>
-      </div>
+      <el-breadcrumb-item
+        v-for="(item, index) in list"
+        :key="item.path">
+          <template v-if="item.meta.title">
+            <span 
+              class="no-redirect"
+              v-if="item.redirect === 'noredirect' || index === item.length - 1">
+              {{getTitle(item.meta.title)}}
+            </span>
+            <router-link
+              v-else
+              :to="item.redirect || item.path">
+              {{getTitle(item.meta.title)}}
+            </router-link>
+          </template>
+      </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
 </template>

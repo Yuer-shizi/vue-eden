@@ -5,7 +5,7 @@ import * as types from '../mutaion-types'
 const app = {
   state: {
     firstLogin: storage.get('firstLogin') || 'yep',
-    version: 'Alpha 1.0',
+    version: 'bate 1.0',
     language: Cookies.get('language') || 'zh',
     sidebar: {
       sliderState: storage.get('sliderState')

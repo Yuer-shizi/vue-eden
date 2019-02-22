@@ -48,9 +48,9 @@ vue-eden 是一个美观的后台管理系统模板，简称 Eden（伊甸园）
 
 ```
 .
-├── README.md
+├── README.md          介绍文件
 ├── package-lock.json
-├── package.json
+├── package.json       项目配置
 ├── public
 │   ├── favicon.ico
 │   └── index.html

@@ -1,5 +1,5 @@
 <template>
-  <el-badge @click.native="jumpToProfile" :value="_" class="notice-area">
+  <el-badge @click.native="jumpToProfile" is-dot class="notice-area">
     <icon name="notice" :scale="2.8"></icon>
   </el-badge>
 </template>

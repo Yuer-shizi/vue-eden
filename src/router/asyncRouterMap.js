@@ -6,7 +6,7 @@ export const asyncRouterMap = [
   {
     path: '/profile',
     component: Layout,
-    hidden: true,
+    hidden: false,
     children: [
       {
         path: 'index',
@@ -14,108 +14,56 @@ export const asyncRouterMap = [
         name: 'profile',
         meta: {
           title: 'profile',
-          icon: 'test'
+          icon: 'profile'
         }
       }
     ]
   },
-  // 控件
+  // 用户管理
   {
-    path: '/widget',
+    path: '/management',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: _import('widget/index'),
-        name: 'widget',
+        component: _import('management/index'),
+        name: 'management',
         meta: {
-          title: 'widget',
-          icon: 'widgets'
+          title: 'management',
+          icon: 'management'
         }
       }
     ]
   },
-  // 卡片列表
+  // 请假管理
   {
-    path: '/panels',
+    path: '/leave',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: _import('panels/index'),
-        name: 'panels',
+        component: _import('leave/index'),
+        name: 'leave',
         meta: {
-          title: 'panels',
-          icon: 'panels'
+          title: 'leave',
+          icon: 'leave'
         }
       }
     ]
   },
-  // 权限页面 只有 admin 用户才可访问
+  // 考勤管理
   {
-    path: '/permission',
-    component: Layout,
-    redirect: '/permission/index',
-    meta: {
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: 'index',
-        component: _import('permission/index'),
-        name: 'permission',
-        meta: {
-          title: 'permission',
-          icon: 'test',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  // 表格
-  {
-    path: '/datatable',
+    path: '/attendance',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: _import('datatable/index'),
-        name: 'datatable',
+        component: _import('attendance/index'),
+        name: 'attendance',
         meta: {
-          title: 'datatable',
-          icon: 'table'
+          title: 'attendance',
+          icon: 'attendance'
         }
-      }
-    ]
-  },
-  // 组件
-  {
-    path: '/components',
-    component: Layout,
-    redirect: 'noredirect',
-    name: 'components',
-    meta: {
-      title: 'components',
-      icon: 'comp'
-    },
-    children: [
-      {
-        path: 'page1',
-        component: _import('components/page1'),
-        name: 'page1',
-        meta: { title: 'page1' }
-      },
-      {
-        path: 'page2',
-        component: _import('components/page2'),
-        name: 'page2',
-        meta: { title: 'page2' }
-      },
-      {
-        path: 'page3',
-        component: _import('components/page3'),
-        name: 'page3',
-        meta: { title: 'page3' }
       }
     ]
   },

@@ -14,7 +14,10 @@ export default {
     page2: '组件2',
     page3: '组件3',
     profile: '个人中心',
-    panels: '卡片展示'
+    panels: '卡片展示',
+    management: '用户管理',
+    leave: '请假管理',
+    attendance: '考勤管理'
   },
   app: {
     switchlang: '切换语言成功',
