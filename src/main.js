@@ -4,7 +4,6 @@ import scroll from 'vue-seamless-scroll'
 import Icon from 'vue-svg-icon/Icon.vue'
 import '@/theme/element-#41B883/index.css'
 import '@/assets/styl/index'
-import '@/mock'
 
 import App from '@/App'
 import { router } from '@/router'
@@ -21,7 +20,7 @@ Vue.use(Element, {
   i18n: (key, value) => i18n.t(key, value)
 })
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 new Vue({
   el: '#app',

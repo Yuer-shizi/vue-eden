@@ -46,6 +46,7 @@ export default {
   },
   sidebarDropDown: {
     profile: 'Profile',
+    change_password: 'Change Password',
     lock: 'Lock',
     logout: 'Logout'
   },

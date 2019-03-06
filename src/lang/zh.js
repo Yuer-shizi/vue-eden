@@ -24,10 +24,11 @@ export default {
     unlock: '解锁'
   },
   login: {
-    edenPart1: '伊甸',
-    edenPart2: '园',
+    edenPart1: '智能考勤',
+    edenPart2: '系统',
     title: '系统登录',
     btn: '登录',
+    register: '注册',
     radioEN: '英语',
     radioZH: '中文',
     forgetpwd: '忘记密码',
@@ -49,6 +50,7 @@ export default {
   },
   sidebarDropDown: {
     profile: '个人中心',
+    change_password: '修改密码',
     lock: '锁定系统',
     logout: '退出登录'
   },
@@ -66,5 +68,11 @@ export default {
     locked: '系统已被锁定！',
     unlock: '系统已解锁成功！',
     topImg: '图片展示区域'
+  },
+  user: {
+    username: '昵称',
+    token: '用户名',
+    introduction: '个性签名',
+    avatar: '头像地址'
   }
 }

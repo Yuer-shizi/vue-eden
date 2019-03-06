@@ -6,9 +6,9 @@ import { getToken } from '@/utils/auth'
 import * as tools from '@/utils/tools'
 
 const hasPermission = (roles, permissionRoles) => {
-  if (roles.indexOf('admin') !== -1) return true
+  if (roles === -1) return true
   if (!permissionRoles) return true
-  return roles.some(role => permissionRoles.indexOf(role) !== -1)
+  return true
 }
 
 const whiteList = ['/login']

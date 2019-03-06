@@ -1,22 +1,14 @@
 <template>
   <div class="login-page">
-    <langselect class="lang" />
-    <el-tooltip class="svg-github" effect="dark" content="Fork Me" placement="bottom">
-      <a href="https://github.com/Yuer-shizi/vue-eden"><icon name="github" :scale="2.5"></icon></a>
-    </el-tooltip>
-    
     <div class="login-wrap">
       <el-col :class="translateLeft" :span="10">
-
         <div v-show="notforget">
-          <div class="logo">
+          <el-row type="flex" class="logo" justify="center">
             <icon name="tree" :scale="8"></icon>
             <div class="title">
-              <a>
-                <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
-              </a>
+              <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
             </div>
-          </div>
+          </el-row>
         
           <div class="login-form">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -29,6 +21,9 @@
               <el-form-item class="btn">
                 <el-button :loading="loading" type="primary" @click="handleLogin('ruleForm')">{{$t('login.btn')}}</el-button>
               </el-form-item>
+              <el-form-item class="btn">
+                <el-button @click="wrapSwitch(false)" type="primary">{{$t('login.register')}}</el-button>
+              </el-form-item>
             </el-form>
           </div>
 
@@ -37,16 +32,14 @@
               <el-checkbox v-model="remember" name="type">{{$t('login.remember')}}</el-checkbox>
             </el-col>
             <el-col class="forgetpwd" :span="12">
-              <span @click="wrapSwitch(false)">{{$t('login.forgetpwd')}}</span>
+              <span>{{$t('login.forgetpwd')}}</span>
             </el-col>
           </div>
         </div>
 
         <div v-show="!notforget">
           <div class="title forgetwrap-title">
-            <a>
-              <span>VUE</span><span class="subtitle">EDEN</span>
-            </a>
+            <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
           </div>
           <div class="forget-form">
             <el-form :model="forgetForm" ref="forgetRuleForm">
@@ -75,7 +68,6 @@
             </el-form>
           </div>
         </div>
-
       </el-col>
 
       <el-col :class="translateRight" :span="14">
@@ -86,14 +78,10 @@
 </template>
 
 <script>
-import langselect from '@/components/langselect'
 import storage from '@/utils/storage'
 
 export default {
   name: 'login',
-  components: {
-    langselect
-  },
   mounted() {
     this.$notify({
       title: '登陆提示',
@@ -174,9 +162,8 @@ export default {
               : storage.remove('loginUser', username)
             const response = await this.$store.dispatch('loginbyUser', {
               username: username.trim(),
-              password: password
+              password: password.trim()
             })
-            this.loading = false
             if (response.data) {
               this.$notify.closeAll()
               this.$router.push({ path: '/' })
@@ -190,6 +177,7 @@ export default {
               this.loading = false
             }
           } catch (error) {
+            this.loading = false
             throw new Error(error)
           }
         } else {
@@ -268,7 +256,7 @@ export default {
   .title
     font-weight bold
     color main-color
-    padding-top 8px
+    padding-top 45px
     font-size 22px
 
     a
@@ -297,15 +285,14 @@ export default {
 
   .forgetwrap-title
     padding-top 30px
-    padding-left 15px
+    padding-left 30px
 
   .forget-form
     padding 20px 30px 30px
     padding-bottom 0
 
   .login-form
-    padding 30px
-    padding-bottom 0
+    padding 20px 30px 0 30px
 
   .login-footer
     padding 0 30px 

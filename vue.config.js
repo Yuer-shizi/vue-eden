@@ -7,13 +7,15 @@ function resolve(dir) {
 }
 
 module.exports = {
-  baseUrl: process.env.baseUrl,
+  publicPath: './',
   outputDir: process.env.outputDir,
   lintOnSave: true,
 
   configureWebpack: () => {
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
+      // console.log(process.env.baseUrl)
+      // console.log(process.env.outputDir)
     } else {
       // 为开发环境修改配置...
     }

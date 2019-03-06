@@ -23,6 +23,8 @@ export function getUserInfo(username) {
   return http({
     url: '/user/info',
     method: 'get',
-    params: { username }
+    params: {
+      username
+    }
   })
 }
