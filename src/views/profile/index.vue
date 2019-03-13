@@ -7,10 +7,10 @@
         </div>
         <div class="header-content">
           <div class="title">
-            早上好 {{username}}，您有 <span>6</span> 条未读消息请尽快查阅。
+            你好 {{userInfo.username}}
           </div>
           <div class="sub">
-            职位：前端工程师 (EGOJUMP 公司 - 研发部)
+            个人宣言：{{userInfo.introduction}}
           </div>
           <div class="sub">
             最后登陆时间：{{lastLoginDate}}
@@ -22,62 +22,64 @@
 
     <el-row class="profile-content" :gutter="20">
       <el-col :sm="24" :lg="18" class="profile-content__left">
-        <el-alert
-          title="提示：您在 2018/05/23 生成的系统报告已提交成功"
-          type="success">
-        </el-alert>
-        <el-alert
-          title="警告：目前系统有三个资源值请求数量过大"
-          type="warning">
-        </el-alert>
         <el-card shadow="hover">
           <div slot="header">
-            <span class="card-title">个人动态</span>
+            <span class="card-title">个人信息</span>
+            <el-button class="chang-but" type="primary" size="mini" plain>修改</el-button>
           </div>
-          <div class="feed" v-for="(item, index) in feedmock" :key="index">
+          <div class="feed">
+              <div>学号：</div>
+              <div>{{userInfo.number}}</div>
+          </div>
+          <div class="feed">
+              <div>昵称：</div>
+              <div>{{userInfo.username}}</div>
+          </div>
+          <div class="feed">
+              <div>头像网址：</div>
+              <div>{{userInfo.avatar}}</div>
+          </div>
+          <div class="feed">
+              <div>学院：</div>
+              <div>{{userInfo.department}}</div>
+          </div>
+          <div class="feed">
+              <div>专业：</div>
+              <div>{{userInfo.speciality}}</div>
+          </div>
+          <div class="feed">
             <div class="line">
-              <div>{{item.content}}</div>
-              <div class="time">{{item.time}}</div>
-              <el-button class="details" type="primary" size="mini" plain>详情</el-button>
+              <div>邮箱：</div>
+              <div>{{userInfo.email}}</div>
+            </div>
+          </div>
+          <div class="feed">
+            <div class="line">
+              <div>性别：</div>
+              <div>{{userInfo.sex}}</div>
+            </div>
+          </div>
+          <div class="feed">
+            <div class="line">
+              <div>年龄：</div>
+              <div>{{userInfo.age}}</div>
+            </div>
+          </div>
+          <div class="feed">
+            <div class="line">
+              <div>个人宣言：</div>
+              <div>{{userInfo.introduction}}</div>
             </div>
           </div>
         </el-card>
       </el-col>
       <el-col :sm="24" :lg="6" class="profile-content__right">
-        <el-input
-          size="medium"
-          placeholder="搜索伊甸园"
-          suffix-icon="el-icon-search"
-          v-model="search">
-        </el-input>
-
         <el-card shadow="hover">
           <div slot="header">
             <span class="card-title">信息模块</span>
           </div>
           <div>
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-          </div>
-        </el-card>
-
-        <el-card shadow="hover">
-          <div slot="header">
-            <span class="card-title">信息模块</span>
-          </div>
-          <div>
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
-            Lorem ipsum dolor sit amet consiquest dio.
+            合肥师范学院
           </div>
         </el-card>
       </el-col>
@@ -88,61 +90,23 @@
 <script>
 import dayjs from 'dayjs'
 
-const feedmock = [
-  {
-    content: '审核 NeverBehave/telegram-recorder 项目并通过',
-    time: '一小时前'
-  },
-  {
-    content: '开始监控 spring-raining 和另外两个用户',
-    time: '五小时前'
-  },
-  {
-    content: '审核 tonsky/FiraCode 项目并通过',
-    time: '一天前'
-  },
-  {
-    content: '开始监控 vladocar 和另外两个用户',
-    time: '一天前'
-  },
-  {
-    content: '开始监控 skevy 和另外五个用户',
-    time: '五天前'
-  },
-  {
-    content: '开始监控 ChainCool 和另外两个用户',
-    time: '十二天前'
-  },
-  {
-    content: '创建了一个项目命名 Yuer-shizi/vue-eden',
-    time: '一个月前'
-  }
-]
-
-const visitHistoryMock = [
-  '权限控制',
-  '首页',
-  '控件123',
-  '个人中心',
-  '表格展示',
-  '组件展示',
-  '审核列表',
-  '帮助中心',
-  '消息列表'
-]
-
 export default {
   name: 'profile',
   data() {
     return {
-      search: '',
-      feedmock,
-      visitHistoryMock,
-      avatarUrl: this.$store.state.user.avatar,
       username: this.$store.state.user.name,
+      userInfo: {},
+      avatarUrl: this.$store.state.user.avatar,
       lastLoginDate: dayjs().format('YYYY-MM-DD HH:mm:ss')
     }
-  }
+  },
+  mounted: function() {
+    console.log(response)
+    this.userInfo = this.$store.dispatch('getUserInfo', {
+      username: this.username
+    })
+  },
+  methods: {}
 }
 </script>
 
@@ -198,7 +162,9 @@ title-sub = #8c8c8c
         font-size 14px
       .sub:last-child
         margin-top 10px
-
+  .chang-but
+    float: right
+    margin-top: -5px
   .profile-content
     margin-top 30px
     &__left
@@ -206,7 +172,7 @@ title-sub = #8c8c8c
       .el-alert
         margin-bottom 20px
       .feed
-        height 63px
+        height 43px
         border-bottom 1px solid #e0e0e0
         .line
           position relative
@@ -214,12 +180,8 @@ title-sub = #8c8c8c
           color #a7a7a7
           font-size 14px
           margin-top 10px
-        .details
-          position absolute
-          right 0
-          top 0
       .feed:not(:first-child)
-        margin-top 25px
+        margin-top 20px
       .feed:last-child
         border-bottom 0px
 
@@ -228,4 +190,5 @@ title-sub = #8c8c8c
         margin-top 20px
     .card-title
       color #585858
+      margin-top: 10px
 </style>

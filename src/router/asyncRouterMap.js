@@ -2,23 +2,6 @@ import _import from '@/utils/import'
 const Layout = _import('layout/Layout')
 
 export const asyncRouterMap = [
-  // 个人中心
-  {
-    path: '/profile',
-    component: Layout,
-    hidden: false,
-    children: [
-      {
-        path: 'index',
-        component: _import('profile/index'),
-        name: 'profile',
-        meta: {
-          title: 'profile',
-          icon: 'profile'
-        }
-      }
-    ]
-  },
   // 用户管理
   {
     path: '/management',
@@ -55,11 +38,33 @@ export const asyncRouterMap = [
   {
     path: '/attendance',
     component: Layout,
+    meta: {
+      title: '考勤管理',
+      icon: 'attendance'
+    },
     children: [
       {
         path: 'index',
         component: _import('attendance/index'),
-        name: 'attendance',
+        name: 'attendance1',
+        meta: {
+          title: 'attendance',
+          icon: 'attendance'
+        }
+      },
+      {
+        path: 'index',
+        component: _import('attendance/index'),
+        name: 'attendance2',
+        meta: {
+          title: 'attendance',
+          icon: 'attendance'
+        }
+      },
+      {
+        path: 'index',
+        component: _import('attendance/index'),
+        name: 'attendance3',
         meta: {
           title: 'attendance',
           icon: 'attendance'

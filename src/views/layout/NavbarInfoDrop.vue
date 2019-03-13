@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       username: this.$store.state.user.name,
-      avatarUrl: this.$store.state.user.avatar,
+      avatarUrl: require('../../assets/images/avatar.jpg'),
       dialogFormVisible: false,
       temp: this.$store.state.user,
       rules: {
@@ -88,7 +88,7 @@ export default {
     },
     jumpToProfile() {
       this.$router.push({
-        path: '/profile/index'
+        path: '/profile'
       })
     },
     changepasswordhandle() {

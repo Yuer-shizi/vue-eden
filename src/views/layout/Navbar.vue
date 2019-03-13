@@ -17,16 +17,10 @@
 
       <div class="middle-area__msglist">
         <breadcrumb />
-        
-        <seamless-list 
-          :messageList="messageList"
-          :singleHeight="60"
-          :limitMoveNum="2"/>
       </div>
     </div>
 
     <div class="right-area">
-      <!-- <lang-select class="lang" /> -->
       <notice />
       <fullscreen class="fullscreen" />
       <infodrop />
@@ -37,9 +31,7 @@
 <script>
 import fullscreen from '@/components/fullscreen'
 import notice from '@/components/notice'
-// import langselect from '@/components/langselect'
 import infodrop from './NavbarInfoDrop'
-import seamlessList from '@/components/seamlessList'
 import breadcrumb from '@/components/breadcrumb'
 import dayjs from 'dayjs'
 
@@ -49,9 +41,7 @@ export default {
     fullscreen,
     notice,
     infodrop,
-    breadcrumb,
-    // 'lang-select': langselect,
-    'seamless-list': seamlessList
+    breadcrumb
   },
   mounted() {
     if (!this.$store.getters.sidebar.sliderState) {

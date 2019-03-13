@@ -5,7 +5,6 @@ export default {
     closeother: '关闭其他'
   },
   route: {
-    dashboard: '首页',
     widget: '控件',
     permission: '权限控制',
     datatable: '表格',
@@ -39,12 +38,9 @@ export default {
       userexist: '用户名为空！',
       pwdexist: '密码为空！'
     },
-    forget_email: '请输入邮箱',
-    forget_code: '请输入验证码',
-    forget_passwrd: '请输入新密码',
+    register_email: '请输入邮箱',
     confirm_passwrd: '请输入确认密码',
-    forget_btn: '重置',
-    forget_back: '返回',
+    register_back: '返回',
     validfaild: '登陆校验未通过，是不是哪里出问题了？',
     pwdChanged: '密码重置成功！'
   },
@@ -58,11 +54,6 @@ export default {
     msg1: '你有一条来自管理员的新消息。',
     msg2: '查看本周伊甸园系统的监控汇报。',
     msg3: '伊甸园有一些新的升级，来一起看看吧。'
-  },
-  dashboard: {
-    sr: '系统报告',
-    pch: '占比统计',
-    todo: '待办事项'
   },
   lock: {
     locked: '系统已被锁定！',

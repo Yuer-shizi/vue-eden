@@ -117,7 +117,7 @@ export default {
           this.currentViewName = prevTag.name
         } else {
           this.$router.push('/')
-          this.currentViewName = 'dashboard'
+          this.currentViewName = 'profile'
         }
       }
     },
@@ -140,7 +140,7 @@ export default {
         case 'closeAll':
           await this.$store.dispatch('closeAllView')
           this.$router.push('/')
-          this.currentViewName = 'dashboard'
+          this.currentViewName = 'profile'
           break
       }
     },

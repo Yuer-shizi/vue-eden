@@ -27,23 +27,42 @@ export const constantRouterMap = [
     name: 'lock',
     hidden: true
   },
+  // 登陆后默认路径个人中心
   {
     path: '',
     component: Layout,
-    redirect: 'dashboard',
+    redirect: 'profile',
     children: [
       {
-        path: 'dashboard',
-        name: 'dashboard',
-        component: _import('dashboard/index'),
+        path: 'profile',
+        component: _import('profile/index'),
+        name: 'profile',
         meta: {
-          title: 'dashboard',
-          icon: 'dashboard',
+          title: 'profile',
+          icon: 'profile',
           noCache: true
         }
       }
     ]
   }
+  // },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: 'dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       name: 'dashboard',
+  //       component: _import('dashboard/index'),
+  //       meta: {
+  //         title: 'dashboard',
+  //         icon: 'dashboard',
+  //         noCache: true
+  //       }
+  //     }
+  //   ]
+  // }
 ]
 
 export const router = new VueRouter({

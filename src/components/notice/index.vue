@@ -10,7 +10,7 @@ export default {
   methods: {
     jumpToProfile() {
       this.$router.push({
-        path: '/profile/index'
+        path: '/profile'
       })
     }
   }

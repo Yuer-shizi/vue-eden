@@ -5,7 +5,6 @@ export default {
     closeother: 'Close Other'
   },
   route: {
-    dashboard: 'Dashboard',
     widget: 'Widget',
     permission: 'Permission',
     datatable: 'Datatable',
@@ -54,11 +53,6 @@ export default {
     msg1: 'You have a new message from Sakuya.',
     msg2: 'Chekcout today eden system report.',
     msg3: 'Eden system has some new update, check it.'
-  },
-  dashboard: {
-    sr: 'System Report',
-    pch: 'Pie Chart',
-    todo: 'ToDo'
   },
   lock: {
     locked: 'Eden system has been locked!',

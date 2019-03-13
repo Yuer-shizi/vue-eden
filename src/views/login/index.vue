@@ -1,67 +1,127 @@
 <template>
   <div class="login-page">
     <div class="login-wrap">
-      <el-col :class="translateLeft" :span="10">
-        <div v-show="notforget">
-          <el-row type="flex" class="logo" justify="center">
-            <icon name="tree" :scale="8"></icon>
+      <el-col
+        :class="translateLeft"
+        :span="10"
+      >
+        <div v-show="isLoginPart">
+          <el-row
+            type="flex"
+            class="logo"
+            justify="center"
+          >
+            <icon
+              name="tree"
+              :scale="8"
+            ></icon>
             <div class="title">
               <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
             </div>
           </el-row>
-        
+
           <div class="login-form">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+            <el-form
+              :model="ruleForm"
+              :rules="rules"
+              ref="ruleForm"
+            >
               <el-form-item prop="username">
-                <el-input :placeholder="$t('login.userplaceholder')" v-model="ruleForm.username"></el-input>
+                <el-input
+                  :placeholder="$t('login.userplaceholder')"
+                  v-model="ruleForm.username"
+                ></el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input :placeholder="$t('login.pwdplaceholder')" type="password" v-model="ruleForm.password"></el-input>
+                <el-input
+                  :placeholder="$t('login.pwdplaceholder')"
+                  type="password"
+                  v-model="ruleForm.password"
+                  @keyup.enter.native="handleLogin('ruleForm')"
+                ></el-input>
               </el-form-item>
               <el-form-item class="btn">
-                <el-button :loading="loading" type="primary" @click="handleLogin('ruleForm')">{{$t('login.btn')}}</el-button>
+                <el-button
+                  :loading="loading"
+                  type="primary"
+                  @click="handleLogin('ruleForm')"
+                >{{$t('login.btn')}}</el-button>
               </el-form-item>
               <el-form-item class="btn">
-                <el-button @click="wrapSwitch(false)" type="primary">{{$t('login.register')}}</el-button>
+                <el-button
+                  @click="wrapSwitch(false)"
+                  type="primary"
+                >{{$t('login.register')}}</el-button>
               </el-form-item>
             </el-form>
           </div>
 
           <div class="login-footer">
             <el-col :span="12">
-              <el-checkbox v-model="remember" name="type">{{$t('login.remember')}}</el-checkbox>
+              <el-checkbox
+                v-model="remember"
+                name="type"
+              >{{$t('login.remember')}}</el-checkbox>
             </el-col>
-            <el-col class="forgetpwd" :span="12">
-              <span>{{$t('login.forgetpwd')}}</span>
+            <el-col
+              class="forgetpwd"
+              :span="12"
+            >
+              <span @click="forgetHandle">{{$t('login.forgetpwd')}}</span>
             </el-col>
           </div>
         </div>
 
-        <div v-show="!notforget">
-          <div class="title forgetwrap-title">
+        <div v-show="!isLoginPart">
+          <div class="title registerwrap-title">
             <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
           </div>
-          <div class="forget-form">
-            <el-form :model="forgetForm" ref="forgetRuleForm">
-              <el-form-item>
-                <el-input :placeholder="$t('login.forget_email')" v-model="forgetForm.email"></el-input>
+          <div class="register-form">
+            <el-form
+              :rules="registerRule"
+              :model="registerForm"
+              ref="registerForm"
+            >
+              <el-form-item prop="type">
+                <el-select placeholder="请选择身份" v-model="registerForm.type">
+                  <el-option label="老师" value="2"></el-option>
+                  <el-option label="学生" value="1"></el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item>
-                <el-input :placeholder="$t('login.forget_code')" v-model="forgetForm.code"></el-input>
+              <el-form-item prop="username">
+                <el-input
+                  :placeholder="$t('login.userplaceholder')"
+                  v-model="registerForm.username"
+                ></el-input>
               </el-form-item>
-              <el-form-item>
-                <el-input :placeholder="$t('login.forget_passwrd')" type="password" v-model="forgetForm.newPassword"></el-input>
+              <el-form-item prop="password">
+                <el-input
+                  :placeholder="$t('login.pwdplaceholder')"
+                  type="password"
+                  v-model="registerForm.password"
+                ></el-input>
               </el-form-item>
-              <el-form-item>
-                <el-input :placeholder="$t('login.confirm_passwrd')" type="password" v-model="forgetForm.confirmPassword"></el-input>
+              <el-form-item prop="comfirmpassword">
+                <el-input
+                  placeholder="请确认密码"
+                  type="password"
+                  v-model="registerForm.confirmPassword"
+                  @keyup.enter.native="registerHandle('registerRuleForm')"
+                ></el-input>
               </el-form-item>
               <el-form-item class="btn">
                 <el-row :gutter="20">
                   <el-col :span="12">
-                    <el-button @click="wrapSwitch(true)" type="primary">{{$t('login.forget_back')}}</el-button>
+                    <el-button
+                      @click="wrapSwitch(true)"
+                      type="primary"
+                    >{{$t('login.register_back')}}</el-button>
                   </el-col>
                   <el-col :span="12">
-                    <el-button @click="forgetHandle" type="primary">{{$t('login.forget_btn')}}</el-button>
+                    <el-button
+                      @click="registerHandle('registerRuleForm')"
+                      type="primary"
+                    >{{$t('login.register')}}</el-button>
                   </el-col>
                 </el-row>
               </el-form-item>
@@ -70,7 +130,10 @@
         </div>
       </el-col>
 
-      <el-col :class="translateRight" :span="14">
+      <el-col
+        :class="translateRight"
+        :span="14"
+      >
         <div class="wallpaper"></div>
       </el-col>
     </div>
@@ -91,37 +154,82 @@ export default {
     })
   },
   data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === undefined && value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.registerForm.confirmPassword !== '') {
+          this.$refs.registerForm.validateField('comfirmpassword')
+        }
+        callback()
+      }
+    }
+    const validatePass2 = (rule, value, callback) => {
+      if (value === undefined && value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       lang: this.$store.state.app.language,
       ruleForm: {
-        username: storage.get('loginUser') || 'admin',
+        username: storage.get('loginUser'),
         password: ''
+      },
+      remember: true,
+      loading: false,
+      switchLeft: false,
+      switchRight: false,
+      isLoginPart: true,
+      registerForm: {
+        type: '',
+        username: '',
+        newPassword: '',
+        confirmPassword: ''
       },
       rules: {
         username: [
           {
             required: true,
             message: this.$t('login.valid.userexist'),
-            trigger: 'change'
+            trigger: 'blur'
           }
         ],
         password: [
           {
             required: true,
             message: this.$t('login.valid.pwdexist'),
-            trigger: 'change'
-          }
+            trigger: 'blur'
+          },
+          { min: 6, message: '密码至少六字符', trigger: 'blur' }
         ]
       },
-      remember: true,
-      loading: false,
-      switchLeft: false,
-      switchRight: false,
-      notforget: true,
-      forgetForm: {
-        email: '',
-        newPassword: '',
-        confirmPassword: ''
+      registerRule: {
+        type: [
+          {
+            required: true,
+            message: '身份不能为空',
+            trigger: 'blur'
+          }
+        ],
+        username: [
+          {
+            required: true,
+            message: this.$t('login.valid.userexist'),
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            validator: validatePass,
+            trigger: 'blur'
+          },
+          { min: 6, message: '密码至少六字符', trigger: 'blur' }
+        ],
+        comfirmpassword: [{ validator: validatePass2, trigger: 'blur' }]
       }
     }
   },
@@ -146,9 +254,9 @@ export default {
       this.switchLeft = !this.switchLeft
       this.switchRight = !this.switchRight
       setTimeout(() => {
-        this.notforget = state
+        this.isLoginPart = state
         this.$refs['ruleForm'].resetFields()
-        // this.$refs['forgetRuleForm'].resetFields()
+        this.$refs['registerForm'].resetFields()
       }, 300)
     },
     handleLogin(formName) {
@@ -187,19 +295,66 @@ export default {
       })
     },
     forgetHandle() {
-      this.$message.success(this.$t('login.pwdChanged'))
-      this.wrapSwitch(true)
+      this.$message({
+        message: '请联系老师！',
+        type: 'error',
+        duration: 0,
+        showClose: true
+      })
+    },
+    registerHandle(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          try {
+            const response = new Promise(async (resolve, reject) => {
+              try {
+                const data = this.form
+                const response = await http({
+                  url: '/specialities',
+                  method: 'post',
+                  data
+                })
+                resolve(response)
+              } catch (error) {
+                reject(error)
+              }
+            })
+            if (response.data == 200) {
+              this.$message({
+                message: response.message,
+                type: 'success',
+                duration: 10000,
+                showClose: true
+              })
+              this.$router.push({ path: '/attendance/infoCount' })
+            } else {
+              this.$message({
+                message: response.message,
+                type: 'error',
+                duration: 10000,
+                showClose: true
+              })
+            }
+          } catch (error) {
+            throw new Error(error)
+          }
+        } else {
+          this.$message.error(this.$t('login.validfaild'))
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="stylus">
-.forget-form,
+.register-form,
 .login-form
   .el-form-item__content
     line-height 40px
   .el-input__inner
+  .el-select
+    width 100%
     padding-top: 2px;
     height 40px
     line-height 40px
@@ -283,11 +438,11 @@ export default {
     .subtitle
       color sub-color
 
-  .forgetwrap-title
+  .registerwrap-title
     padding-top 30px
     padding-left 30px
 
-  .forget-form
+  .register-form
     padding 20px 30px 30px
     padding-bottom 0
 

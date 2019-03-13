@@ -85,7 +85,7 @@ const user = {
             }
           })
           const roles = response.data.type + ''
-          const name = response.data.name
+          const name = response.data.username
           const avatar = response.data.avatar
           const introduction = response.data.introduction
 

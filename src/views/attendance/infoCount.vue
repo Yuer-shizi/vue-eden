@@ -1,12 +1,12 @@
 <template>
   <div>
-    widget page
+    qign page
   </div>
 </template>
 
 <script>
 export default {
-  name: 'widget'
+  name: 'attendance'
 }
 </script>
 

@@ -4,6 +4,9 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
+					<el-input v-model="filters.number" placeholder="编号"></el-input>
+				</el-form-item>
+				<el-form-item>
 					<el-input v-model="filters.name" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
@@ -19,16 +22,15 @@
 		<el-table :data="users" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
 			<el-table-column type="selection" width="55">
 			</el-table-column>
-			<el-table-column type="index" width="60"> </el-table-column>
-      <el-table-column prop="department" label="系别" width="150" sortable> </el-table-column>
-      <el-table-column prop="speciality" label="专业" width="150" sortable> </el-table-column>
-      <el-table-column prop="number" label="编号" width="150" sortable> </el-table-column>
-			<el-table-column prop="username" label="姓名" width="120" sortable> </el-table-column>
-			<el-table-column prop="sex" label="性别" width="100" :formatter="formatSex" sortable> </el-table-column>
-      <el-table-column prop="age" label="年龄" width="100" sortable> </el-table-column>
-			<el-table-column prop="birth" label="生日" width="120" sortable> </el-table-column>
-			<el-table-column prop="phone" label="地址" min-width="180" sortable> </el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column prop="number" label="编号" sortable min-width="80px"> </el-table-column>
+      <el-table-column prop="department" label="系别" min-width="150" sortable> </el-table-column>
+      <el-table-column prop="speciality" label="专业" min-width="150" sortable> </el-table-column>
+			<el-table-column prop="username" label="姓名" min-width="120" sortable> </el-table-column>
+			<el-table-column prop="sex" label="性别" min-width="100" :formatter="formatSex" sortable> </el-table-column>
+      <el-table-column prop="age" label="年龄" min-width="100" sortable> </el-table-column>
+			<el-table-column prop="birth" label="生日" min-width="120" sortable> </el-table-column>
+			<el-table-column prop="email" label="邮箱" min-width="180" sortable> </el-table-column>
+			<el-table-column label="操作" min-width="150">
 				<template slot-scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -114,6 +116,7 @@ export default {
   data() {
     return {
       filters: {
+        number: '',
         name: ''
       },
       users: [],
@@ -175,13 +178,15 @@ export default {
     getUsers() {
       let para = {
         page: this.page,
+        number: this.filters.number,
         name: this.filters.name
       }
       this.listLoading = true
       //NProgress.start()
       getUserListPage(para).then(res => {
-        this.total = res.data.total
-        this.users = res.data.users
+        console.log(res)
+        this.total = res.data.length
+        this.users = res.data
         this.listLoading = false
         //NProgress.done()
       })
