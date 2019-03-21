@@ -25,19 +25,15 @@
         <el-card shadow="hover">
           <div slot="header">
             <span class="card-title">个人信息</span>
-            <el-button class="chang-but" type="primary" size="mini" plain>修改</el-button>
+            <el-button @click="changeFormVisible=true" class="chang-but" type="primary" size="mini" plain>修改</el-button>
           </div>
           <div class="feed">
               <div>学号：</div>
               <div>{{userInfo.number}}</div>
           </div>
           <div class="feed">
-              <div>昵称：</div>
+              <div>用户名：</div>
               <div>{{userInfo.username}}</div>
-          </div>
-          <div class="feed">
-              <div>头像网址：</div>
-              <div>{{userInfo.avatar}}</div>
           </div>
           <div class="feed">
               <div>学院：</div>
@@ -48,21 +44,19 @@
               <div>{{userInfo.speciality}}</div>
           </div>
           <div class="feed">
-            <div class="line">
-              <div>邮箱：</div>
-              <div>{{userInfo.email}}</div>
-            </div>
+              <div>头像网址：</div>
+              <div>{{userInfo.avatar}}</div>
           </div>
           <div class="feed">
             <div class="line">
               <div>性别：</div>
-              <div>{{userInfo.sex}}</div>
+              <div>{{userInfo.sex == 1 ? '男' : userInfo.sex == 0 ? '女' : '未知'}}</div>
             </div>
           </div>
           <div class="feed">
             <div class="line">
-              <div>年龄：</div>
-              <div>{{userInfo.age}}</div>
+              <div>邮箱：</div>
+              <div>{{userInfo.email}}</div>
             </div>
           </div>
           <div class="feed">
@@ -72,6 +66,26 @@
             </div>
           </div>
         </el-card>
+        <el-dialog title="修改个人信息" :visible.sync="changeFormVisible" :close-on-click-modal="false">
+          <el-form :model="changeForm" label-width="100px" ref="changeForm">
+            <el-form-item label="用户名：">
+              <el-input v-model="changeForm.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="头像网址：">
+              <el-input v-model="changeForm.avatar" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱：">
+              <el-input v-model="changeForm.email" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="个人宣言：">
+              <el-input v-model="changeForm.introduction" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click.native="changeFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click.native="dialogFormSubmit" :loading="changeLoading">确 定</el-button>
+          </div>
+        </el-dialog>
       </el-col>
       <el-col :sm="24" :lg="6" class="profile-content__right">
         <el-card shadow="hover">
@@ -89,6 +103,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import http from '@/utils/http'
 
 export default {
   name: 'profile',
@@ -96,17 +111,47 @@ export default {
     return {
       username: this.$store.state.user.name,
       userInfo: {},
+      changeForm: {},
       avatarUrl: this.$store.state.user.avatar,
-      lastLoginDate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      lastLoginDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      changeFormVisible: false,
+      changeLoading: false
     }
   },
   mounted: function() {
-    console.log(response)
-    this.userInfo = this.$store.dispatch('getUserInfo', {
-      username: this.username
-    })
+    this.$store
+      .dispatch('getUserInfo', {
+        username: this.username
+      })
+      .then(request => {
+        this.userInfo = request.data
+        this.changeForm = this.userInfo
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
   },
-  methods: {}
+  methods: {
+    dialogFormSubmit: function() {
+      this.$refs.changeForm.validate(valid => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.changeLoading = true
+            let para = Object.assign(this.userInfo, this.changeForm)
+            http.get(`/user/update`, { params: para }).then(() => {
+              this.changeLoading = false
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.$refs['changeForm'].resetFields()
+              this.changeFormVisible = false
+            })
+          })
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -181,13 +226,9 @@ title-sub = #8c8c8c
           font-size 14px
           margin-top 10px
       .feed:not(:first-child)
-        margin-top 20px
+        margin-top 15px
       .feed:last-child
         border-bottom 0px
-
-    &__right
-      .el-card:not(:first-child)
-        margin-top 20px
     .card-title
       color #585858
       margin-top: 10px

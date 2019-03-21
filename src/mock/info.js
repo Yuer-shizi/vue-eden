@@ -10,7 +10,6 @@ const userMap = {
     speciality: '计算机',
     sex: '男',
     age: '12',
-    birth: '20160513',
     email: '12345@qq.com',
     number: '001'
   },
@@ -24,7 +23,6 @@ const userMap = {
     speciality: '网络',
     sex: '女',
     age: '12',
-    birth: '20160513',
     email: '12345@qq.com',
     number: '007'
   }
@@ -109,6 +107,16 @@ export default {
       code: 200,
       data: data,
       message: 'specialities'
+    }
+    return response
+  },
+  changeInfo: config => {
+    let userInfo = JSON.parse(config.body)
+    // console.log(userInfo)
+    let response = {
+      code: 200,
+      data: userInfo,
+      message: 'Change userInfo success, Welcome'
     }
     return response
   }

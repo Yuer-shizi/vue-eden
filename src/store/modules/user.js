@@ -37,7 +37,7 @@ const user = {
             password
           }
           const response = await http({
-            url: '/login/login',
+            url: '/user/login',
             method: 'post',
             data
           })
@@ -55,7 +55,7 @@ const user = {
     logout({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
-          await http({ url: '/login/logout', method: 'post' })
+          await http({ url: '/user/logout', method: 'post' })
           commit(types.SET_ROLES, '')
           commit(types.SET_ROLES, [])
           Cookies.remove('user')
@@ -84,7 +84,7 @@ const user = {
               username
             }
           })
-          const roles = response.data.type + ''
+          const roles = response.data.type == 0 ? 'stu' : 'admin'
           const name = response.data.username
           const avatar = response.data.avatar
           const introduction = response.data.introduction

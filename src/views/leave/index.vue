@@ -1,30 +1,29 @@
 <template>
   <div class="attendance">
     <h1>请假申请</h1>
-    <el-form ref="ruleform" :model="form" label-width="180px">
+    <el-form ref="form" :model="formData" :rules="formRules" label-width="180px">
       <el-form-item label="申请人">
-        <el-input v-model="form.username" disabled></el-input>
+        <el-input v-model="formData.username" disabled></el-input>
       </el-form-item>
-      <el-form-item label="班级">
-        <el-select v-model="form.speciality" placeholder="请选择班级">
-          <el-option label="请选择..." value="null"></el-option>
-          <el-option :v-for="sp in specialities" :value="sp">{{sp}}</el-option>
+      <el-form-item label="班级" prop="speciality">
+        <el-select v-model="formData.speciality" placeholder="请选择班级">
+          <el-option v-for="sp in specialities" :key="sp" :label="sp" :value="sp"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="请假类型">
-        <el-select v-model="form.type" placeholder="请选择类型">
+      <el-form-item label="请假类型" prop="type">
+        <el-select v-model="formData.type" placeholder="请选择类型">
           <el-option label="病假" value="病假"></el-option>
           <el-option label="事假" value="事假"></el-option>
           <el-option label="其他" value="其他"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="请假时间">
+      <el-form-item label="请假时间" prop="date">
         <el-col :span="11">
-          <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" ref="date1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="10">
-          <el-select type="fixed-time" placeholder="第几节课" v-model="form.class1" style="width: 100%;">
+          <el-select type="fixed-time" ref="class1" placeholder="第几节课" v-model="formData.class1" style="width: 100%;">
             <el-option label="第一节课" value="1"></el-option>
             <el-option label="第二节课" value="2"></el-option>
             <el-option label="第三节课" value="3"></el-option>
@@ -37,11 +36,11 @@
         </el-col>
         <el-col class="line" :span="2">到</el-col>
         <el-col :span="11">
-          <el-date-picker type="date" placeholder="选择日期" v-model="form.date2" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" ref="date2" placeholder="选择日期" v-model="formData.date2" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="9">
-          <el-select type="fixed-time" placeholder="第几节课" v-model="form.class2" style="width: 100%;">
+          <el-select type="fixed-time" ref="class2" placeholder="第几节课" v-model="formData.class2" style="width: 100%;">
             <el-option label="第一节课" value="1"></el-option>
             <el-option label="第二节课" value="2"></el-option>
             <el-option label="第三节课" value="3"></el-option>
@@ -53,12 +52,12 @@
           </el-select>
         </el-col>
       </el-form-item>
-      <el-form-item label="请假原因">
-        <el-input type="textarea" v-model="form.reason"></el-input>
+      <el-form-item label="请假原因" prop="reason">
+        <el-input type="textarea" v-model="formData.reason"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        <el-button>取消</el-button>
+        <el-button type="primary" @click.native="onSubmit" :loading="loading">立即创建</el-button>
+        <el-button @click.native="onReset">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -68,34 +67,89 @@
 import http from '@/utils/http'
 export default {
   name: 'leave',
-  data: function() {
+  data() {
+    const valiDate = (rule, value, callback) => {
+      if (!this.$refs.date1.value) {
+        callback(new Error('请选择开始日期'))
+      } else if (!this.$refs.date2.value) {
+        callback(new Error('请选择结束日期'))
+      } else if (!this.$refs.class1.value) {
+        callback(new Error('请选择课程开始节数'))
+      } else if (!this.$refs.class2.value) {
+        callback(new Error('请选择课程结束节数'))
+      } else if (this.$refs.date1.value > this.$refs.date2.value) {
+        callback(new Error('开始日期与结束日期冲突'))
+      } else if (
+        this.$refs.date1.value == this.$refs.date2.value &&
+        this.$refs.class1.value > this.$refs.class2.value
+      ) {
+        callback(new Error('开始节数与结束节数冲突'))
+      }
+      callback()
+    }
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < new Date()
+        },
+        shortcuts: [
+          {
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date())
+            }
+          },
+          {
+            text: '明天',
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() + 3600 * 1000 * 24)
+              picker.$emit('pick', date)
+            }
+          }
+        ]
+      },
       specialities: [],
-      form: {
+      formData: {
         username: this.$store.state.user.name,
         speciality: '',
-        date1: '',
+        date1: new Date(),
         class1: '',
-        date2: '',
+        date2: new Date(),
         class2: '',
         reason: ''
       },
-      ruleform: {
+      formRules: {
         speciality: [
           {
             required: true,
-            message: this.$t('login.valid.userexist'),
-            trigger: 'change'
+            message: '班级为空',
+            trigger: 'blur'
+          }
+        ],
+        type: [
+          {
+            required: true,
+            message: '请假类型为空',
+            trigger: 'blur'
+          }
+        ],
+        date: [
+          {
+            required: true,
+            validator: valiDate,
+            trigger: 'blur'
           }
         ],
         reason: [
           {
             required: true,
-            message: this.$t('login.valid.pwdexist'),
-            trigger: 'change'
+            message: '请假原因为空',
+            trigger: 'blur'
           }
         ]
-      }
+      },
+      loading: false
     }
   },
   mounted: function() {
@@ -104,7 +158,7 @@ export default {
   methods: {
     async getSpecialities() {
       let response = await http({
-        url: '/specialities',
+        url: '/user/specialities',
         method: 'get'
       })
       if (response.code == 200) {
@@ -119,7 +173,48 @@ export default {
       }
     },
     // 提交请假
-    onSubmit: function() {}
+    onSubmit: function() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {})
+            .then(() => {
+              this.loading = true
+              let para = Object.assign({}, this.formData)
+              http
+                .get(`/leave/add`, {
+                  params: para
+                })
+                .then(data => {
+                  if (data.code == 200) {
+                    this.loading = false
+                    this.$message({
+                      message: data.message,
+                      type: 'success'
+                    })
+                    this.$refs.form.resetFields()
+                  } else {
+                    this.loading = false
+                    this.$message({
+                      message: data.message,
+                      type: 'error'
+                    })
+                  }
+                })
+                .catch(error => {
+                  this.$message({
+                    message: error.message,
+                    type: 'error'
+                  })
+                  this.loading = false
+                })
+            })
+            .catch(() => {})
+        }
+      })
+    },
+    onReset: function() {
+      this.$refs.form.resetFields()
+    }
   }
 }
 </script>
@@ -132,5 +227,5 @@ export default {
 .el-select
   width 100%
 .line
-  text-align center0
+  text-align center
 </style>

@@ -1,51 +1,27 @@
 <template>
   <div class="login-page">
     <div class="login-wrap">
-      <el-col
-        :class="translateLeft"
-        :span="10"
-      >
+      <el-col :class="translateLeft"
+        :span="10">
         <div v-show="isLoginPart">
-          <el-row
-            type="flex"
-            class="logo"
-            justify="center"
-          >
-            <icon
-              name="tree"
-              :scale="8"
-            ></icon>
+          <el-row type="flex" class="logo" justify="center">
+            <icon name="tree" :scale="8"></icon>
             <div class="title">
               <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
             </div>
           </el-row>
 
           <div class="login-form">
-            <el-form
-              :model="ruleForm"
-              :rules="rules"
-              ref="ruleForm"
-            >
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
               <el-form-item prop="username">
-                <el-input
-                  :placeholder="$t('login.userplaceholder')"
-                  v-model="ruleForm.username"
-                ></el-input>
+                <el-input :placeholder="$t('login.userplaceholder')" v-model="ruleForm.username"></el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input
-                  :placeholder="$t('login.pwdplaceholder')"
-                  type="password"
-                  v-model="ruleForm.password"
-                  @keyup.enter.native="handleLogin('ruleForm')"
-                ></el-input>
+                <el-input :placeholder="$t('login.pwdplaceholder')" type="password"
+                  v-model="ruleForm.password" @keyup.enter.native="handleLogin('ruleForm')"></el-input>
               </el-form-item>
               <el-form-item class="btn">
-                <el-button
-                  :loading="loading"
-                  type="primary"
-                  @click="handleLogin('ruleForm')"
-                >{{$t('login.btn')}}</el-button>
+                <el-button :loading="loading" type="primary" @click="handleLogin('ruleForm')">{{$t('login.btn')}}</el-button>
               </el-form-item>
               <el-form-item class="btn">
                 <el-button
@@ -269,7 +245,7 @@ export default {
               ? storage.set('loginUser', username)
               : storage.remove('loginUser', username)
             const response = await this.$store.dispatch('loginbyUser', {
-              username: username.trim(),
+              username: (username + '').trim(),
               password: password.trim()
             })
             if (response.data) {

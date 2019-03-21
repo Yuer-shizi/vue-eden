@@ -39,7 +39,7 @@ const permission = {
       return new Promise(resolve => {
         let routers = null
         // 如果 roles 角色中存在 admin 则直接返回所有路由, 否则进行路由过滤
-        roles.indexOf('admin') > -1
+        roles == -1
           ? (routers = asyncRouterMap)
           : (routers = filterAsyncRouter(asyncRouterMap, roles))
         commit(types.SET_ROUTERS, routers)

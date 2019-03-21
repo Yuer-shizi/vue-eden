@@ -46,27 +46,27 @@ export const asyncRouterMap = [
       {
         path: 'index',
         component: _import('attendance/index'),
-        name: 'attendance1',
+        name: 'attendance',
         meta: {
-          title: 'attendance',
+          title: '课堂考勤',
           icon: 'attendance'
         }
       },
       {
-        path: 'index',
-        component: _import('attendance/index'),
-        name: 'attendance2',
+        path: 'attendances',
+        component: _import('attendance/attendances'),
+        name: 'attendances',
         meta: {
-          title: 'attendance',
+          title: '考勤记录',
           icon: 'attendance'
         }
       },
       {
-        path: 'index',
-        component: _import('attendance/index'),
-        name: 'attendance3',
+        path: 'infoCount',
+        component: _import('attendance/infoCount'),
+        name: 'infoCount',
         meta: {
-          title: 'attendance',
+          title: '考勤统计',
           icon: 'attendance'
         }
       }

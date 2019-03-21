@@ -1,39 +1,37 @@
-import axios from 'axios'
-
-let base = ''
+import http from '@/utils/http'
 
 export const getUserList = params => {
-  return axios.get(`${base}/user/list`, {
+  return http.get(`/user/list`, {
     params: params
   })
 }
 
 export const getUserListPage = params => {
-  return axios.get(`${base}/user/listpage`, {
+  return http.get(`/user/list`, {
     params: params
   })
 }
 
 export const removeUser = params => {
-  return axios.get(`${base}/user/remove`, {
+  return http.get(`/user/delete`, {
     params: params
   })
 }
 
 export const batchRemoveUser = params => {
-  return axios.get(`${base}/user/batchremove`, {
+  return http.get(`/user/batch-remove`, {
     params: params
   })
 }
 
 export const editUser = params => {
-  return axios.get(`${base}/user/edit`, {
+  return http.get(`/user/update`, {
     params: params
   })
 }
 
 export const addUser = params => {
-  return axios.get(`${base}/user/add`, {
+  return http.get(`/user/add`, {
     params: params
   })
 }

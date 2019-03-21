@@ -16,7 +16,9 @@ export default {
     panels: '卡片展示',
     management: '用户管理',
     leave: '请假管理',
-    attendance: '考勤管理'
+    attendance: '课堂考勤',
+    attendances: '考勤记录',
+    infoCount: '考勤统计'
   },
   app: {
     switchlang: '切换语言成功',
@@ -32,7 +34,7 @@ export default {
     radioZH: '中文',
     forgetpwd: '忘记密码',
     remember: '记住我',
-    userplaceholder: '请输入用户名',
+    userplaceholder: '请输入账号',
     pwdplaceholder: '请输入密码',
     valid: {
       userexist: '用户名为空！',

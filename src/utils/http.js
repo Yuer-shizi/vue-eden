@@ -4,8 +4,8 @@ import { getToken } from '@/utils/auth'
 import * as tools from './tools'
 
 const http = axios.create({
-  baseURL: '',
-  timeout: 30000
+  baseURL: 'http://localhost:8080',
+  timeout: 500000
 })
 
 // request 拦截器

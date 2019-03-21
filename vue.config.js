@@ -1,5 +1,3 @@
-// https://cli.vuejs.org/
-
 const path = require('path')
 
 function resolve(dir) {
