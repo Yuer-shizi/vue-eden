@@ -32,17 +32,18 @@ router.beforeEach(async (to, from, next) => {
       if (store.getters.roles.length === 0) {
         try {
           const infoResponse = await store.dispatch('getUserInfo')
-          const roles = infoResponse.data.type == 0 ? 'stu' : 'admin'
+          const roles = infoResponse.data.type == 0 ? ['stu'] : ['admin']
           // 根据 roles 权限生成路由表
           await store.dispatch('generateRoutes', roles)
           // 动态新生成的路由表
           router.addRoutes(store.getters.addRouters)
           next({ ...to, replace: true })
         } catch (error) {
+          console.log(error)
           await store.dispatch('felogout')
           tools.notify({
             type: 'error',
-            message: 'Verification failed, please login again'
+            message: '动态生成路由表失败'
           })
           next({ path: '/' })
         }

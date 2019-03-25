@@ -6,6 +6,9 @@ export const asyncRouterMap = [
   {
     path: '/management',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     children: [
       {
         path: 'index',
@@ -22,6 +25,9 @@ export const asyncRouterMap = [
   {
     path: '/leave',
     component: Layout,
+    meta: {
+      roles: ['stu']
+    },
     children: [
       {
         path: 'index',
@@ -40,7 +46,8 @@ export const asyncRouterMap = [
     component: Layout,
     meta: {
       title: '考勤管理',
-      icon: 'attendance'
+      icon: 'attendance',
+      roles: ['admin']
     },
     children: [
       {
@@ -60,15 +67,15 @@ export const asyncRouterMap = [
           title: '考勤记录',
           icon: 'attendance'
         }
-      },
-      {
-        path: 'infoCount',
-        component: _import('attendance/infoCount'),
-        name: 'infoCount',
-        meta: {
-          title: '考勤统计',
-          icon: 'attendance'
-        }
+        // },
+        // {
+        //   path: 'infoCount',
+        //   component: _import('attendance/infoCount'),
+        //   name: 'infoCount',
+        //   meta: {
+        //     title: '考勤统计',
+        //     icon: 'attendance'
+        //   }
       }
     ]
   },
