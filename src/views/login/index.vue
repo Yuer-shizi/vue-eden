@@ -12,16 +12,16 @@
           </el-row>
 
           <div class="login-form">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
+            <el-form :rules="rules" :model="loginForm" ref="loginForm" >
               <el-form-item prop="username">
-                <el-input :placeholder="$t('login.userplaceholder')" v-model="ruleForm.username"></el-input>
+                <el-input :placeholder="$t('login.userplaceholder')" v-model="loginForm.username"></el-input>
               </el-form-item>
               <el-form-item prop="password">
                 <el-input :placeholder="$t('login.pwdplaceholder')" type="password"
-                  v-model="ruleForm.password" @keyup.enter.native="handleLogin('ruleForm')"></el-input>
+                  v-model="loginForm.password" @keyup.enter.native="handleLogin('loginForm')"></el-input>
               </el-form-item>
               <el-form-item class="btn">
-                <el-button :loading="loading" type="primary" @click="handleLogin('ruleForm')">{{$t('login.btn')}}</el-button>
+                <el-button :loading="loading" type="primary" @click="handleLogin('loginForm')">{{$t('login.btn')}}</el-button>
               </el-form-item>
               <el-form-item class="btn">
                 <el-button
@@ -53,36 +53,28 @@
             <span>{{$t('login.edenPart1')}}</span><span class="subtitle">{{$t('login.edenPart2')}}</span>
           </div>
           <div class="register-form">
-            <el-form
-              :rules="registerRule"
-              :model="registerForm"
-              ref="registerForm"
-            >
+            <el-form :rules="registerRule" :model="registerForm" ref="registerForm">
               <el-form-item prop="type">
                 <el-select placeholder="请选择身份" v-model="registerForm.type">
-                  <el-option label="老师" value="2"></el-option>
-                  <el-option label="学生" value="1"></el-option>
+                  <el-option label="老师" value="1"></el-option>
+                  <el-option label="学生" value="0"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item prop="username">
                 <el-input
-                  :placeholder="$t('login.userplaceholder')"
-                  v-model="registerForm.username"
+                  placeholder="请输入学号"
+                  v-model.trim.number="registerForm.username"
                 ></el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input
-                  :placeholder="$t('login.pwdplaceholder')"
-                  type="password"
-                  v-model="registerForm.password"
-                ></el-input>
+                <el-input :placeholder="$t('login.pwdplaceholder')" type="password" v-model.trim="registerForm.password"></el-input>
               </el-form-item>
-              <el-form-item prop="comfirmpassword">
+              <el-form-item prop="confirmPassword">
                 <el-input
                   placeholder="请确认密码"
                   type="password"
-                  v-model="registerForm.confirmPassword"
-                  @keyup.enter.native="registerHandle('registerRuleForm')"
+                  v-model.trim="registerForm.confirmPassword"
+                  @keyup.enter.native="registerHandle('registerForm')"
                 ></el-input>
               </el-form-item>
               <el-form-item class="btn">
@@ -95,7 +87,7 @@
                   </el-col>
                   <el-col :span="12">
                     <el-button
-                      @click="registerHandle('registerRuleForm')"
+                      @click="registerHandle('registerForm')"
                       type="primary"
                     >{{$t('login.register')}}</el-button>
                   </el-col>
@@ -106,10 +98,7 @@
         </div>
       </el-col>
 
-      <el-col
-        :class="translateRight"
-        :span="14"
-      >
+      <el-col :class="translateRight" :span="14">
         <div class="wallpaper"></div>
       </el-col>
     </div>
@@ -118,40 +107,40 @@
 
 <script>
 import storage from '@/utils/storage'
-
+import http from '@/utils/http'
 export default {
   name: 'login',
-  mounted() {
-    this.$notify({
-      title: '登陆提示',
-      message: '用户名 admin 密码随意输入',
-      position: 'top-left',
-      duration: 0
-    })
-  },
   data() {
-    const validatePass = (rule, value, callback) => {
-      if (value === undefined && value === '') {
+    var validatePass = (rule, value, callback) => {
+      console.log(value)
+      console.log(this.registerForm.confirmPassword)
+      if (value === '') {
         callback(new Error('请输入密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码至少六字符'))
+      } else if (
+        '' !== this.registerForm.confirmPassword &&
+        value !== this.registerForm.confirmPassword
+      ) {
+        callback('两次输入密码不一致')
       } else {
-        if (this.registerForm.confirmPassword !== '') {
-          this.$refs.registerForm.validateField('comfirmpassword')
-        }
         callback()
       }
     }
-    const validatePass2 = (rule, value, callback) => {
-      if (value === undefined && value === '') {
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
         callback(new Error('请再次输入密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码至少六字符'))
       } else if (value !== this.registerForm.password) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error('两次输入密码不一致'))
       } else {
         callback()
       }
     }
     return {
       lang: this.$store.state.app.language,
-      ruleForm: {
+      loginForm: {
         username: storage.get('loginUser'),
         password: ''
       },
@@ -163,7 +152,7 @@ export default {
       registerForm: {
         type: '',
         username: '',
-        newPassword: '',
+        password: '',
         confirmPassword: ''
       },
       rules: {
@@ -196,16 +185,25 @@ export default {
             required: true,
             message: this.$t('login.valid.userexist'),
             trigger: 'blur'
+          },
+          {
+            type: 'number',
+            message: '学号只能为数字',
+            trigger: 'blur'
           }
         ],
         password: [
           {
             validator: validatePass,
             trigger: 'blur'
-          },
-          { min: 6, message: '密码至少六字符', trigger: 'blur' }
+          }
         ],
-        comfirmpassword: [{ validator: validatePass2, trigger: 'blur' }]
+        confirmPassword: [
+          {
+            validator: validatePass2,
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -231,7 +229,7 @@ export default {
       this.switchRight = !this.switchRight
       setTimeout(() => {
         this.isLoginPart = state
-        this.$refs['ruleForm'].resetFields()
+        this.$refs['loginForm'].resetFields()
         this.$refs['registerForm'].resetFields()
       }, 300)
     },
@@ -240,7 +238,7 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           try {
-            let { username, password } = this.ruleForm
+            let { username, password } = this.loginForm
             this.remember
               ? storage.set('loginUser', username)
               : storage.remove('loginUser', username)
@@ -278,15 +276,15 @@ export default {
         showClose: true
       })
     },
-    registerHandle(formName) {
-      this.$refs[formName].validate(async valid => {
+    registerHandle() {
+      this.$refs.registerForm.validate(async valid => {
         if (valid) {
           try {
-            const response = new Promise(async (resolve, reject) => {
+            let response = await new Promise(async (resolve, reject) => {
               try {
-                const data = this.form
-                const response = await http({
-                  url: '/specialities',
+                let data = Object.assign({}, this.registerForm)
+                let response = await http({
+                  url: '/user/register',
                   method: 'post',
                   data
                 })
@@ -295,14 +293,16 @@ export default {
                 reject(error)
               }
             })
-            if (response.data == 200) {
+            console.log(response)
+            if (response.code == 200) {
               this.$message({
                 message: response.message,
                 type: 'success',
                 duration: 10000,
                 showClose: true
               })
-              this.$router.push({ path: '/attendance/infoCount' })
+              this.wrapSwitch(true)
+              this.loginForm.username = response.data.username
             } else {
               this.$message({
                 message: response.message,

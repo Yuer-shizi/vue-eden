@@ -4,7 +4,7 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.number" placeholder="编号"></el-input>
+					<el-input v-model="filters.number" placeholder="学号"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-input v-model="filters.username" placeholder="姓名"></el-input>
@@ -22,7 +22,7 @@
 		<el-table :data="users" highlight-current-row v-loading="listLoading" @selection-change="selsChange" stripe border style="width: 100%;">
 			<el-table-column type="selection" width="55">
 			</el-table-column>
-			<el-table-column prop="number" label="编号" sortable min-width="80px"> </el-table-column>
+			<el-table-column prop="number" label="学号" sortable min-width="80px"> </el-table-column>
       <el-table-column prop="department" label="系别" min-width="150" sortable> </el-table-column>
       <el-table-column prop="speciality" label="专业" min-width="150" sortable> </el-table-column>
 			<el-table-column prop="username" label="姓名" min-width="100" sortable> </el-table-column>
@@ -47,7 +47,7 @@
 		<!--编辑界面-->
 		<el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="formRules" ref="editForm">
-				<el-form-item label="编号" prop="number">
+				<el-form-item label="学号" prop="number">
 					<el-input v-model="editForm.number" disabled></el-input>
 				</el-form-item>
         <el-form-item label="系别" prop="department">
@@ -81,7 +81,7 @@
 		<!--新增界面-->
 		<el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="formRules" ref="addForm">
-        <el-form-item label="编号" prop="number">
+        <el-form-item label="学号" prop="number">
 					<el-input v-model="addForm.number"></el-input>
 				</el-form-item>
         <el-form-item label="系别" prop="department">
@@ -162,7 +162,7 @@ export default {
         number: [
           {
             required: true,
-            message: '请输入编号',
+            message: '请输入学号',
             trigger: 'blur'
           },
           {

@@ -1,11 +1,5 @@
 import http from '@/utils/http'
 
-export const getUserList = params => {
-  return http.get(`/user/list`, {
-    params: params
-  })
-}
-
 export const getUserListPage = params => {
   return http.get(`/user/list`, {
     params: params

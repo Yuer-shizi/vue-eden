@@ -10,9 +10,9 @@
           <el-option v-for="sp in specialities" :key="sp" :label="sp" :value="sp"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="请假时间" prop="date">
+      <el-form-item label="时间" prop="date">
         <el-col :span="11">
-          <el-date-picker type="date" ref="data1" placeholder="选择日期" v-model="formData.date" disabled :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" ref="data1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="11">
@@ -29,23 +29,23 @@
         </el-col>
       </el-form-item>
       <el-form-item label="请假人员" prop="find">
-        <el-button @click.native="findLeaver" type="primary" icon="el-icon-search">查询</el-button>
-        <el-select v-model="formData.leaveNumbers" filterable multiple placeholder="请选择">
+        <el-select v-model="formData.leaves" value-key="number" multiple placeholder="请选择">
           <el-option
             v-for="item in users"
             :key="item.number"
             :label="item.username"
-            :value="item.number">
+            :value="item">
           </el-option>
         </el-select>
+        <el-button @click.native="findLeaver" type="primary" size="small" icon="el-icon-search">查询</el-button>
       </el-form-item>
       <el-form-item label="旷课人员">
-        <el-select v-model="formData.truancyNumbers" filterable multiple placeholder="请选择">
+        <el-select v-model="formData.truants" value-key="number" multiple placeholder="请选择">
           <el-option
             v-for="item in users"
             :key="item.number"
             :label="item.username"
-            :value="item.number">
+            :value="item">
           </el-option>
         </el-select>
       </el-form-item>
@@ -59,6 +59,7 @@
 
 <script>
 import http from '@/utils/http'
+import { getUserListBySpeciality } from '@/api/users'
 export default {
   name: 'leave',
   data() {
@@ -70,9 +71,6 @@ export default {
     }
     return {
       pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() < new Date()
-        },
         shortcuts: [
           {
             text: '今天',
@@ -91,10 +89,12 @@ export default {
         ]
       },
       specialities: [],
+      users: [],
       formData: {
+        number: this.$store.state.user.number,
         username: this.$store.state.user.name,
         speciality: '',
-        date1: new Date(),
+        date1: new Date().getTime(),
         class1: '',
         leaveNumbers: [],
         truancyNumbers: []
@@ -107,7 +107,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        date: [
+        date1: [
           {
             required: true,
             message: '时间为空',
@@ -124,6 +124,13 @@ export default {
       },
       loading: false,
       finded: false
+    }
+  },
+  watch: {
+    'formData.speciality': function(value) {
+      if (value != '') {
+        this.getUsers(value)
+      }
     }
   },
   mounted: function() {
@@ -146,40 +153,51 @@ export default {
         })
       }
     },
+    //获取用户列表
+    async getUsers() {
+      getUserListBySpeciality({ speciality: this.formData.speciality }).then(
+        res => {
+          this.users = res.data
+        }
+      )
+    },
     findLeaver: function() {
-      this.finded = true
-      let para = {
-        speciality: this.formData.speciality,
-        date1: this.formData.date1,
-        class1: this.formData.class1
-      }
-      http
-        .get(`/leave/FindLeaver`, {
-          params: para
-        })
-        .then(data => {
-          if (data.code == 200) {
-            this.loading = false
-            this.$message({
-              message: data.message,
-              type: 'success'
-            })
-            this.$refs.form.resetFields()
-          } else {
-            this.loading = false
-            this.$message({
-              message: data.message,
-              type: 'error'
-            })
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          this.finded = true
+          let para = {
+            speciality: this.formData.speciality,
+            date1: this.formData.date1,
+            class1: this.formData.class1
           }
-        })
-        .catch(error => {
-          this.$message({
-            message: error.message,
-            type: 'error'
-          })
-          this.loading = false
-        })
+          http
+            .get(`/leave/findLeaver`, {
+              params: para
+            })
+            .then(data => {
+              if (data.code == 200) {
+                this.loading = false
+                this.$message({
+                  message: '查询成功',
+                  type: 'success'
+                })
+              } else {
+                this.loading = false
+                this.$message({
+                  message: data.message,
+                  type: 'error'
+                })
+              }
+            })
+            .catch(error => {
+              this.$message({
+                message: error.message,
+                type: 'error'
+              })
+              this.loading = false
+            })
+        }
+      })
     },
     // 提交请假
     onSubmit: function() {
@@ -187,11 +205,9 @@ export default {
         if (valid) {
           this.$confirm('确认提交吗？', '提示', {})
             .then(() => {
-              let para = Object.assign({}, this.form)
+              let para = Object.assign({}, this.formData)
               http
-                .get(`/att/add`, {
-                  params: para
-                })
+                .post(`/att/add`, para)
                 .then(data => {
                   if (data.code == 200) {
                     this.loading = false

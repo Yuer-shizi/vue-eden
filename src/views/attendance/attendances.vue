@@ -4,13 +4,19 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.number" placeholder="编号"></el-input>
+					<el-input v-model="filters.number" placeholder="工号"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-input v-model="filters.username" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getUsers">查询</el-button>
+					<el-input v-model="filters.leave" placeholder="请假人员"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.truant" placeholder="旷课人员"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="getAttendances">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleAdd">新增</el-button>
@@ -19,27 +25,30 @@
 		</el-col>
 
 		<!--列表-->
-		<el-table :data="users" highlight-current-row v-loading="listLoading" @selection-change="selsChange" stripe border style="width: 100%;">
-			<el-table-column type="selection" width="55">
-			</el-table-column>
-			<el-table-column prop="number" label="编号" sortable min-width="80px"> </el-table-column>
-      <el-table-column prop="department" label="系别" min-width="150" sortable> </el-table-column>
-      <el-table-column prop="speciality" label="专业" min-width="150" sortable> </el-table-column>
-			<el-table-column prop="username" label="姓名" min-width="100" sortable> </el-table-column>
-			<el-table-column prop="sex" label="性别" min-width="80" :formatter="formatSex" sortable> </el-table-column>
-      <el-table-column prop="age" label="年龄" min-width="80" sortable> </el-table-column>
-			<el-table-column prop="email" label="邮箱" min-width="180" sortable> </el-table-column>
+		<el-table :data="attendances" highlight-current-row v-loading="listLoading" stripe border style="width: 100%;">
+			<el-table-column prop="number" label="工号" min-width="100" sortable> </el-table-column>
+			<el-table-column prop="username" label="记录人" min-width="100" sortable> </el-table-column>
+      <el-table-column prop="speciality" label="班级" min-width="180" sortable> </el-table-column>
+			<el-table-column prop="date1" :formatter="formatDate" label="时间" min-width="100" sortable> </el-table-column>
+			<el-table-column label="请假人员" min-width="180">
+        <template slot-scope="scope">
+          <span v-for="(item,index) in scope.row.leaves" :key="index" style="margin-left: 10px">{{ item.username }}</span>
+        </template>
+      </el-table-column>
+			<el-table-column label="旷课人员" min-width="180">
+        <template slot-scope="scope">
+          <span v-for="(item,index) in scope.row.truants" :key="index" style="margin-left: 10px">{{ item.username }}</span>
+        </template>
+      </el-table-column>
 			<el-table-column fixed="right" label="操作" min-width="150">
 				<template slot-scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
 
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
-			<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
 			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
 			</el-pagination>
 		</el-col>
@@ -47,101 +56,82 @@
 		<!--编辑界面-->
 		<el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="formRules" ref="editForm">
-				<el-form-item label="编号" prop="number">
-					<el-input v-model="editForm.number" disabled></el-input>
-				</el-form-item>
-        <el-form-item label="系别" prop="department">
-					<el-input v-model="editForm.department"></el-input>
-				</el-form-item>
-				<el-form-item label="专业" prop="speciality">
-					<el-input v-model="editForm.speciality"></el-input>
-				</el-form-item>
-				<el-form-item label="姓名" prop="username">
-					<el-input v-model="editForm.username" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="性别">
-					<el-radio-group v-model="editForm.sex">
-						<el-radio label="1">男</el-radio>
-						<el-radio label="0">女</el-radio>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="editForm.age" :min="0" :max="100"></el-input-number>
-				</el-form-item>
-        <el-form-item label="邮件" prop="email">
-					<el-input v-model="editForm.email"></el-input>
-				</el-form-item>
+				<el-form-item label="记录人">
+          <el-input v-model="editForm.username" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="班级" prop="speciality">
+          <el-select v-model="editForm.speciality" placeholder="请选择班级" disabled>
+            <el-option :label="editForm.speciality" :value="editForm.speciality"></el-option>
+          </el-select>
+        </el-form-item>
+				<el-form-item label="时间" prop="date">
+          <el-col :span="11">
+            <el-date-picker type="date" disabled ref="data1" placeholder="选择日期" v-model="editForm.date1" value-format="timestamp" style="width: 100%;"></el-date-picker>
+          </el-col>
+          <el-col class="line" :span="2">--</el-col>
+          <el-col :span="11">
+            <el-select type="fixed-time" ref="class1" placeholder="第几节课" v-model="editForm.class1" disabled style="width: 100%;">
+              <el-option label="第一节课" value="1"></el-option>
+              <el-option label="第二节课" value="2"></el-option>
+              <el-option label="第三节课" value="3"></el-option>
+              <el-option label="第四节课" value="4"></el-option>
+              <el-option label="第五节课" value="5"></el-option>
+              <el-option label="第六节课" value="6"></el-option>
+              <el-option label="第七节课" value="7"></el-option>
+              <el-option label="第八节课" value="8"></el-option>
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="请假人员" prop="find">
+          <el-select v-model="editForm.leaves" value-key="number" multiple placeholder="请选择">
+            <el-option
+              v-for="item in users"
+              :key="item.number"
+              :label="item.username"
+              :value="item">
+            </el-option>
+          </el-select>
+          <el-button @click.native="findLeaver" type="primary" size="small" icon="el-icon-search">查询</el-button>
+        </el-form-item>
+        <el-form-item label="旷课人员">
+          <el-select v-model="editForm.truants" value-key="number" multiple placeholder="请选择">
+            <el-option
+              v-for="item in users"
+              :key="item.number"
+              :label="item.username"
+              :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
 			</div>
 		</el-dialog>
-
-		<!--新增界面-->
-		<el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
-			<el-form :model="addForm" label-width="80px" :rules="formRules" ref="addForm">
-        <el-form-item label="编号" prop="number">
-					<el-input v-model="addForm.number"></el-input>
-				</el-form-item>
-        <el-form-item label="系别" prop="department">
-					<el-input v-model="addForm.department"></el-input>
-				</el-form-item>
-				<el-form-item label="专业" prop="speciality">
-					<el-input v-model="addForm.speciality"></el-input>
-				</el-form-item>
-				<el-form-item label="姓名" prop="username">
-					<el-input v-model="addForm.username" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="性别">
-					<el-radio-group v-model="addForm.sex">
-						<el-radio class="radio" :label="1">男</el-radio>
-						<el-radio class="radio" :label="0">女</el-radio>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="addForm.age" :min="0" :max="100"></el-input-number>
-				</el-form-item>
-        <el-form-item label="邮件" prop="email">
-					<el-input v-model="addForm.email"></el-input>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="addFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
-			</div>
-		</el-dialog>
 	</section>
 </template>
 
 <script>
-import {
-  getUserListPage,
-  removeUser,
-  batchRemoveUser,
-  editUser,
-  addUser
-} from '@/api/manage'
+import http from '@/utils/http'
+import { getUserListBySpeciality } from '@/api/users'
 export default {
-  name: 'managerpage',
+  name: 'attendances',
   data() {
-    // 学号校验
-    const validNumber = (rule, value, callback) => {
-      let reg = /[0-9]{5}/
-      if (value.length != 5) {
-        callback(new Error('编号必须为5位'))
-      } else if (!reg.test(value)) {
-        callback(new Error('编号只能包含数字0-9'))
-      } else {
-        callback()
+    const finded = (rule, value, callback) => {
+      if (!this.finded) {
+        callback(new Error('未查询请假人员'))
       }
+      callback()
     }
     return {
       filters: {
         number: '',
-        username: ''
+        username: '',
+        leave: '',
+        truant: ''
       },
-      users: [],
+      attendances: [],
       total: 0,
       page: 1,
       listLoading: false,
@@ -149,125 +139,80 @@ export default {
       editFormVisible: false, //编辑界面是否显示
       editLoading: false,
       //编辑界面数据
-      editForm: {
-        number: '',
-        username: '',
-        sex: -1,
-        age: 0,
-        addr: ''
-      },
-      addFormVisible: false, //新增界面是否显示
-      addLoading: false,
+      editForm: {},
+      users: {},
       formRules: {
-        number: [
-          {
-            required: true,
-            message: '请输入编号',
-            trigger: 'blur'
-          },
-          {
-            validator: validNumber,
-            trigger: 'blur'
-          }
-        ],
-        department: [
-          {
-            required: true,
-            message: '请输入学院',
-            trigger: 'blur'
-          }
-        ],
         speciality: [
           {
             required: true,
-            message: '请输入专业',
+            message: '班级为空',
             trigger: 'blur'
           }
         ],
-        username: [
+        date1: [
           {
             required: true,
-            message: '请输入姓名',
+            message: '时间为空',
             trigger: 'blur'
           }
         ],
-        email: [
+        finded: [
           {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
+            required: true,
+            validator: finded,
             trigger: 'blur'
           }
         ]
-      },
-      //新增界面数据
-      addForm: {
-        number: '',
-        department: '',
-        speciality: '',
-        username: '',
-        sex: -1,
-        age: 0,
-        email: ''
       }
     }
   },
   methods: {
-    // 性别显示转换
-    formatSex: function(row) {
-      return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知'
+    // 时间显示转换
+    formatDate: function(row) {
+      return new Date(row.date1 - 0).toLocaleDateString()
     },
     handleCurrentChange(val) {
       this.page = val
-      this.getUsers()
+      this.getAttendances()
     },
     //获取用户列表
-    getUsers() {
+    getAttendances() {
       let para = {
         page: this.page,
         size: 20,
         number: this.filters.number,
-        username: this.filters.username
+        username: this.filters.username,
+        leaves: { username: this.filters.leave },
+        truants: { username: this.filters.truant }
       }
       this.listLoading = true
-      getUserListPage(para).then(res => {
-        this.total = res.data.totalElements
-        this.users = res.data.content
-        this.listLoading = false
-      })
-    },
-    //删除
-    handleDel: function(index, row) {
-      this.$confirm('确认删除该记录吗?', '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          this.listLoading = true
-          let para = { number: row.number }
-          removeUser(para).then(() => {
-            this.listLoading = false
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            this.getUsers()
-          })
+      http
+        .get(`/att/list`, {
+          params: para
         })
-        .catch(() => {})
+        .then(res => {
+          this.total = res.data.totalElements
+          this.attendances = res.data.content
+          this.listLoading = false
+        })
     },
     //显示编辑界面
     handleEdit: function(index, row) {
-      this.editFormVisible = true
       this.editForm = Object.assign({}, row)
+      this.editForm.date1 = new Date(row.date1 - 0).getTime()
+      //获取用户列表
+      getUserListBySpeciality({ speciality: this.editForm.speciality }).then(
+        res => {
+          this.users = res.data
+        }
+      )
+      this.editFormVisible = true
     },
-    //显示新增界面
+    //跳转新增界面
     handleAdd: function() {
-      this.addFormVisible = true
-      this.addForm = {
-        username: '',
-        sex: -1,
-        age: 0,
-        addr: ''
-      }
+      this.$router.push({
+        path: '/attendance/index'
+      })
     },
     //编辑
     editSubmit: function() {
@@ -288,64 +233,22 @@ export default {
               })
               this.$refs['editForm'].resetFields()
               this.editFormVisible = false
-              this.getUsers()
+              this.getAttendances()
             })
           })
         }
       })
-    },
-    //新增
-    addSubmit: function() {
-      this.$refs.addForm.validate(valid => {
-        if (valid) {
-          this.$confirm('确认提交吗？', '提示', {}).then(() => {
-            this.addLoading = true
-            let para = Object.assign({}, this.addForm)
-            addUser(para).then(() => {
-              this.addLoading = false
-              //NProgress.done()
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              })
-              this.$refs['addForm'].resetFields()
-              this.addFormVisible = false
-              this.getUsers()
-            })
-          })
-        }
-      })
-    },
-    selsChange: function(sels) {
-      this.sels = sels
-    },
-    //批量删除
-    batchRemove: function() {
-      var numbers = this.sels.map(item => item.number).toString()
-      this.$confirm('确认删除选中记录吗？', '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          this.listLoading = true
-          let para = { numbers: numbers }
-          batchRemoveUser(para).then(() => {
-            this.listLoading = false
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            this.getUsers()
-          })
-        })
-        .catch(() => {})
     }
   },
   mounted() {
-    this.getUsers()
+    this.getAttendances()
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-
+.el-select
+  width 100%
+.line
+  text-align center
 </style>
