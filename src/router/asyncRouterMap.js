@@ -7,7 +7,7 @@ export const asyncRouterMap = [
     path: '/management',
     component: Layout,
     meta: {
-      roles: ['admin']
+      roles: ['teacher']
     },
     children: [
       {
@@ -26,7 +26,8 @@ export const asyncRouterMap = [
     path: '/leave',
     component: Layout,
     meta: {
-      roles: ['stu']
+      title: '请假管理',
+      icon: 'leave'
     },
     children: [
       {
@@ -34,8 +35,19 @@ export const asyncRouterMap = [
         component: _import('leave/index'),
         name: 'leave',
         meta: {
+          roles: ['stu'],
           title: 'leave',
           icon: 'leave'
+        }
+      },
+      {
+        path: 'list',
+        component: _import('leave/list'),
+        name: 'leaveList',
+        meta: {
+          roles: ['teacher'],
+          title: 'leave',
+          icon: 'leaveList'
         }
       }
     ]
@@ -47,7 +59,7 @@ export const asyncRouterMap = [
     meta: {
       title: '考勤管理',
       icon: 'attendance',
-      roles: ['admin']
+      roles: ['teacher']
     },
     children: [
       {

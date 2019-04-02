@@ -179,7 +179,7 @@ export default {
     getAttendances() {
       let para = {
         page: this.page,
-        size: 20,
+        size: 10,
         number: this.filters.number,
         username: this.filters.username,
         leaves: { username: this.filters.leave },

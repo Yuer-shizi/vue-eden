@@ -5,8 +5,8 @@
       <el-form-item label="申请人">
         <el-input v-model="formData.username" disabled></el-input>
       </el-form-item>
-      <el-form-item label="班级" prop="speciality">
-        <el-select v-model="formData.speciality" placeholder="请选择班级">
+      <el-form-item label="专业" prop="speciality">
+        <el-select v-model="formData.speciality" placeholder="请选择专业">
           <el-option v-for="sp in specialities" :key="sp" :label="sp" :value="sp"></el-option>
         </el-select>
       </el-form-item>
@@ -14,12 +14,11 @@
         <el-select v-model="formData.type" placeholder="请选择类型">
           <el-option label="病假" value="病假"></el-option>
           <el-option label="事假" value="事假"></el-option>
-          <el-option label="其他" value="其他"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="请假时间" prop="date">
         <el-col :span="11">
-          <el-date-picker type="date" ref="date1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="number" ref="date1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="10">
@@ -36,7 +35,7 @@
         </el-col>
         <el-col class="line" :span="2">到</el-col>
         <el-col :span="11">
-          <el-date-picker type="date" ref="date2" placeholder="选择日期" v-model="formData.date2" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="number" ref="date2" placeholder="选择日期" v-model="formData.date2" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="9">
@@ -152,9 +151,6 @@ export default {
       loading: false
     }
   },
-  mounted: function() {
-    this.getSpecialities()
-  },
   methods: {
     async getSpecialities() {
       let response = await http({
@@ -176,45 +172,46 @@ export default {
     onSubmit: function() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$confirm('确认提交吗？', '提示', {})
-            .then(() => {
-              this.loading = true
-              let para = Object.assign({}, this.formData)
-              http
-                .get(`/leave/add`, {
-                  params: para
-                })
-                .then(data => {
-                  if (data.code == 200) {
-                    this.loading = false
-                    this.$message({
-                      message: data.message,
-                      type: 'success'
-                    })
-                    this.$refs.form.resetFields()
-                  } else {
-                    this.loading = false
-                    this.$message({
-                      message: data.message,
-                      type: 'error'
-                    })
-                  }
-                })
-                .catch(error => {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.loading = true
+            let para = Object.assign({}, this.formData)
+            http
+              .get(`/leave/add`, {
+                params: para
+              })
+              .then(data => {
+                if (data.code == 200) {
+                  this.loading = false
                   this.$message({
-                    message: error.message,
+                    message: data.message,
+                    type: 'success'
+                  })
+                  this.$refs.form.resetFields()
+                } else {
+                  this.loading = false
+                  this.$message({
+                    message: data.message,
                     type: 'error'
                   })
-                  this.loading = false
+                }
+              })
+              .catch(error => {
+                this.$message({
+                  message: error.message,
+                  type: 'error'
                 })
-            })
-            .catch(() => {})
+                this.loading = false
+              })
+          })
         }
       })
     },
     onReset: function() {
       this.$refs.form.resetFields()
     }
+  },
+  mounted: function() {
+    this.getSpecialities()
   }
 }
 </script>

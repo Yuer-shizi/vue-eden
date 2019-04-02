@@ -40,7 +40,8 @@ export default {
   data() {
     return {
       username: this.$store.state.user.name,
-      avatarUrl: require('../../assets/images/avatar.jpg'),
+      // avatarUrl: require('../../assets/images/avatar.jpg'),
+      avatarUrl: this.$store.state.user.avatar,
       dialogFormVisible: false,
       temp: this.$store.state.user,
       rules: {

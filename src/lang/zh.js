@@ -16,6 +16,7 @@ export default {
     panels: '卡片展示',
     management: '用户管理',
     leave: '请假管理',
+    leaveList: '请假列表',
     attendance: '课堂考勤',
     attendances: '考勤记录',
     infoCount: '考勤统计'

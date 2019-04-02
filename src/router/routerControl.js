@@ -32,7 +32,12 @@ router.beforeEach(async (to, from, next) => {
       if (store.getters.roles.length === 0) {
         try {
           const infoResponse = await store.dispatch('getUserInfo')
-          const roles = infoResponse.data.type == 0 ? ['stu'] : ['admin']
+          const roles =
+            infoResponse.data.type == -1
+              ? ['admin']
+              : infoResponse.data.type == 1
+                ? ['teacher']
+                : ['stu']
           // 根据 roles 权限生成路由表
           await store.dispatch('generateRoutes', roles)
           // 动态新生成的路由表
