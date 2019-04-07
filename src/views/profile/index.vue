@@ -112,7 +112,7 @@ export default {
       username: this.$store.state.user.name,
       userInfo: {},
       changeForm: {},
-      avatarUrl: this.$store.state.user.avatar,
+      avatarUrl: require('../../assets/images/avatar.jpg'),
       lastLoginDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
       changeFormVisible: false,
       changeLoading: false

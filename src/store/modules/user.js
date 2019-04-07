@@ -8,7 +8,7 @@ const user = {
     token: '',
     roles: [],
     name: '',
-    avatar: '',
+    speciality: '',
     introduction: ''
   },
   mutations: {
@@ -24,8 +24,8 @@ const user = {
     [types.SET_NAME]: (state, name) => {
       state.name = name
     },
-    [types.SET_AVATAR]: (state, avatar) => {
-      state.avatar = avatar
+    [types.SET_SPECIALITY]: (state, speciality) => {
+      state.speciality = speciality
     }
   },
   actions: {
@@ -84,14 +84,19 @@ const user = {
               username
             }
           })
-          const roles = response.data.type == 0 ? 'stu' : 'admin'
+          const roles =
+            response.data.type == 0
+              ? ['stu']
+              : response.data.type == -1
+                ? ['admin']
+                : ['teacher']
           const name = response.data.username
-          const avatar = response.data.avatar
+          const speciality = response.data.speciality
           const introduction = response.data.introduction
 
           commit(types.SET_ROLES, roles)
           commit(types.SET_NAME, name)
-          commit(types.SET_AVATAR, avatar)
+          commit(types.SET_SPECIALITY, speciality)
           commit(types.SET_INTRODUCTION, introduction)
 
           resolve(response)

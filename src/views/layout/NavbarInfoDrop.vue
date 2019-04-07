@@ -15,46 +15,88 @@
       <img :src="avatarUrl" />
     </div>
     <el-dialog title="修改密码" center :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="90px" style="width: 500px; margin-left:50px;">
-        <el-form-item :label="$t('user.username') + '：'" prop="username">
-          <el-input v-model="temp.name"></el-input>
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="width: 500px; margin-left:50px;">
+        <el-form-item label="密码：" prop="password">
+          <el-input v-model="temp.password"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('user.token') + '：'" prop="token">
-          <el-input v-model="temp.token"></el-input>
+        <el-form-item label="新密码：" prop="newpassword">
+          <el-input v-model="temp.newpassword"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('user.introduction') + '：'" prop="introduction">
-          <el-input v-model="temp.introduction"/>
+        <el-form-item label="确认密码：" prop="confirmPassword">
+          <el-input v-model="temp.confirmPassword"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">保存</el-button>
+        <el-button type="primary" @click="changepassword()">保存</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+// import http from '@/utils/http'
 export default {
   name: 'demo',
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码至少六字符'))
+      } else if (
+        '' !== this.temp.confirmPassword &&
+        value !== this.temp.confirmPassword
+      ) {
+        callback('两次输入密码不一致')
+      } else {
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码至少六字符'))
+      } else if (value !== this.temp.newpassword) {
+        callback(new Error('两次输入密码不一致'))
+      } else {
+        callback()
+      }
+    }
     return {
+      // number: this.$store.state.user.number,
       username: this.$store.state.user.name,
-      // avatarUrl: require('../../assets/images/avatar.jpg'),
-      avatarUrl: this.$store.state.user.avatar,
+      avatarUrl: require('../../assets/images/avatar.jpg'),
+      // avatarUrl: this.$store.state.user.avatar,
       dialogFormVisible: false,
-      temp: this.$store.state.user,
+      temp: {
+        password: '',
+        newpassword: '',
+        confirmPassword: ''
+      },
       rules: {
-        username: [
-          { require: true, message: '请输入昵称', trigger: 'blur' },
-          { min: 4, max: 12, message: '长度在 4 到 12 个字符', trigger: 'blur' }
+        password: [
+          {
+            required: true,
+            message: this.$t('login.valid.pwdexist'),
+            trigger: 'blur'
+          },
+          { min: 6, message: '密码至少六字符', trigger: 'blur' }
         ],
-        token: [
-          { require: true, message: '请输入昵称', trigger: 'blur' },
-          { min: 4, max: 12, message: '长度在 4 到 12 个字符', trigger: 'blur' }
+        newpassword: [
+          {
+            required: true,
+            validator: validatePass,
+            trigger: 'blur'
+          }
         ],
-        introduction: [
-          { require: true, message: '请输入昵称', trigger: 'blur' }
+        confirmPassword: [
+          {
+            required: true,
+            validator: validatePass2,
+            trigger: 'blur'
+          }
         ]
       }
     }
@@ -94,6 +136,46 @@ export default {
     },
     changepasswordhandle() {
       this.dialogFormVisible = true
+    },
+    changepassword() {
+      this.$refs.dataForm.validate(async valid => {
+        if (valid) {
+          try {
+            let data = {
+              number: this.number,
+              password: this.temp.password.trim(),
+              newPassword: this.temp.newpassword.trim()
+            }
+            const response = await http({
+              url: '/user/change-password',
+              method: 'post',
+              data
+            })
+            if (response.code === 200) {
+              this.$message({
+                message: response.message,
+                type: 'success',
+                duration: 10000,
+                showClose: true
+              })
+            } else {
+              this.$message({
+                message: response.message,
+                type: 'error',
+                duration: 10000,
+                showClose: true
+              })
+              this.loading = false
+            }
+          } catch (error) {
+            this.loading = false
+            throw new Error(error)
+          }
+        } else {
+          this.loading = false
+          this.$message.error(this.$t('login.validfaild'))
+        }
+      })
     }
   }
 }
