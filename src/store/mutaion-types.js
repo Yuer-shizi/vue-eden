@@ -5,11 +5,11 @@ export const SET_SLIDERSTATE = 'SET_SLIDERSTATE'
 export const SET_LOCK_STATE = 'SET_LOCK_STATE'
 
 // user
-export const SET_TOKEN = 'SET_TOKEN'
+export const SET_NUMBER = 'SET_NUMBER'
 export const SET_ROLES = 'SET_ROLES'
 export const SET_INTRODUCTION = 'SET_INTRODUCTION'
 export const SET_NAME = 'SET_NAME'
-export const SET_AVATAR = 'SET_AVATAR'
+export const SET_SPECIALITY = 'SET_SPECIALITY'
 
 // permission
 export const SET_ROUTERS = 'SET_ROUTERS'

@@ -26,8 +26,8 @@
       <el-table-column prop="department" label="系别" min-width="150" sortable> </el-table-column>
       <el-table-column prop="speciality" label="专业" min-width="150" sortable> </el-table-column>
 			<el-table-column prop="username" label="姓名" min-width="100" sortable> </el-table-column>
+      <el-table-column prop="type" label="身份" min-width="80" :formatter="formatType" sortable> </el-table-column>
 			<el-table-column prop="sex" label="性别" min-width="80" :formatter="formatSex" sortable> </el-table-column>
-      <el-table-column prop="age" label="年龄" min-width="80" sortable> </el-table-column>
 			<el-table-column prop="email" label="邮箱" min-width="180" sortable> </el-table-column>
 			<el-table-column fixed="right" label="操作" min-width="150">
 				<template slot-scope="scope">
@@ -58,6 +58,13 @@
 				</el-form-item>
 				<el-form-item label="姓名" prop="username">
 					<el-input v-model="editForm.username" auto-complete="off"></el-input>
+				</el-form-item>
+        <el-form-item label="身份" prop="type">
+					<el-radio-group v-model="editForm.type">
+						<el-radio label="-1">管理员</el-radio>
+						<el-radio label="1">老师</el-radio>
+						<el-radio label="0">学生</el-radio>
+					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="editForm.sex">
@@ -92,6 +99,13 @@
 				</el-form-item>
 				<el-form-item label="姓名" prop="username">
 					<el-input v-model="addForm.username" auto-complete="off"></el-input>
+				</el-form-item>
+        <el-form-item label="身份" prop="type">
+					<el-radio-group v-model="addForm.type">
+						<el-radio label="-1">管理员</el-radio>
+						<el-radio label="1">老师</el-radio>
+						<el-radio label="0">学生</el-radio>
+					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="addForm.sex">
@@ -152,6 +166,7 @@ export default {
       editForm: {
         number: '',
         username: '',
+        type: -2,
         sex: -1,
         age: 0,
         addr: ''
@@ -191,6 +206,13 @@ export default {
             trigger: 'blur'
           }
         ],
+        type: [
+          {
+            required: true,
+            message: '请选择身份',
+            trigger: 'blur'
+          }
+        ],
         email: [
           {
             type: 'email',
@@ -212,6 +234,10 @@ export default {
     }
   },
   methods: {
+    // 身份显示转换
+    formatType: function(row) {
+      return row.type == 0 ? '学生' : row.sex == 1 ? '老师' : '管理员'
+    },
     // 性别显示转换
     formatSex: function(row) {
       return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知'
@@ -256,18 +282,12 @@ export default {
     },
     //显示编辑界面
     handleEdit: function(index, row) {
-      this.editFormVisible = true
       this.editForm = Object.assign({}, row)
+      this.editFormVisible = true
     },
     //显示新增界面
     handleAdd: function() {
       this.addFormVisible = true
-      this.addForm = {
-        username: '',
-        sex: -1,
-        age: 0,
-        addr: ''
-      }
     },
     //编辑
     editSubmit: function() {
@@ -276,10 +296,6 @@ export default {
           this.$confirm('确认提交吗？', '提示', {}).then(() => {
             this.editLoading = true
             let para = Object.assign({}, this.editForm)
-            para.birth =
-              !para.birth || para.birth == ''
-                ? ''
-                : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd')
             editUser(para).then(() => {
               this.editLoading = false
               this.$message({
@@ -303,7 +319,6 @@ export default {
             let para = Object.assign({}, this.addForm)
             addUser(para).then(() => {
               this.addLoading = false
-              //NProgress.done()
               this.$message({
                 message: '提交成功',
                 type: 'success'

@@ -6,9 +6,7 @@
         <el-input v-model="formData.username" disabled></el-input>
       </el-form-item>
       <el-form-item label="专业" prop="speciality">
-        <el-select v-model="formData.speciality" placeholder="请选择专业">
-          <el-option v-for="sp in specialities" :key="sp" :label="sp" :value="sp"></el-option>
-        </el-select>
+        <el-input v-model="formData.speciality" disabled></el-input>
       </el-form-item>
       <el-form-item label="请假类型" prop="type">
         <el-select v-model="formData.type" placeholder="请选择类型">
@@ -18,7 +16,7 @@
       </el-form-item>
       <el-form-item label="请假时间" prop="date">
         <el-col :span="11">
-          <el-date-picker type="number" ref="date1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
+          <el-date-picker type="date" ref="date1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="10">
@@ -35,7 +33,7 @@
         </el-col>
         <el-col class="line" :span="2">到</el-col>
         <el-col :span="11">
-          <el-date-picker type="number" ref="date2" placeholder="选择日期" v-model="formData.date2" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
+          <el-date-picker  type="date" ref="date2" placeholder="选择日期" v-model="formData.date2" :picker-options="pickerOptions" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
         </el-col>
         <el-col class="line" :span="2">--</el-col>
         <el-col :span="9">
@@ -64,6 +62,7 @@
 
 <script>
 import http from '@/utils/http'
+import dayjs from 'dayjs'
 export default {
   name: 'leave',
   data() {
@@ -89,7 +88,7 @@ export default {
     return {
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() < new Date()
+          return time.getTime() < Date.now() - 3600 * 1000 * 24
         },
         shortcuts: [
           {
@@ -108,15 +107,13 @@ export default {
           }
         ]
       },
-      specialities: [],
       formData: {
         username: this.$store.state.user.name,
-        speciality: '',
-        date1: new Date(),
+        speciality: this.$store.state.user.speciality,
+        date1: dayjs().format('YYYY-MM-DD'),
         class1: '',
-        date2: new Date(),
-        class2: '',
-        reason: ''
+        date2: dayjs().format('YYYY-MM-DD'),
+        class2: ''
       },
       formRules: {
         speciality: [
@@ -152,22 +149,22 @@ export default {
     }
   },
   methods: {
-    async getSpecialities() {
-      let response = await http({
-        url: '/user/specialities',
-        method: 'get'
-      })
-      if (response.code == 200) {
-        this.specialities = response.data
-      } else {
-        this.$message({
-          message: response.message,
-          type: 'error',
-          duration: 10000,
-          showClose: true
-        })
-      }
-    },
+    // async getSpecialities() {
+    //   let response = await http({
+    //     url: '/user/specialities',
+    //     method: 'get'
+    //   })
+    //   if (response.code == 200) {
+    //     this.specialities = response.data
+    //   } else {
+    //     this.$message({
+    //       message: response.message,
+    //       type: 'error',
+    //       duration: 10000,
+    //       showClose: true
+    //     })
+    //   }
+    // },
     // 提交请假
     onSubmit: function() {
       this.$refs.form.validate(valid => {
@@ -209,10 +206,10 @@ export default {
     onReset: function() {
       this.$refs.form.resetFields()
     }
-  },
-  mounted: function() {
-    this.getSpecialities()
   }
+  // mounted: function() {
+  //   this.getSpecialities()
+  // }
 }
 </script>
 

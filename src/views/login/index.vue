@@ -223,6 +223,18 @@ export default {
       }
     }
   },
+  watch: {
+    'registerForm.type': function(val) {
+      if (val == '1') {
+        this.$message({
+          message: '请联系已注册的老师添加',
+          type: 'error',
+          duration: 10000,
+          showClose: true
+        })
+      }
+    }
+  },
   methods: {
     wrapSwitch(state) {
       this.switchLeft = !this.switchLeft
