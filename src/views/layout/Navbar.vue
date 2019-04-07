@@ -21,7 +21,6 @@
     </div>
 
     <div class="right-area">
-      <notice />
       <fullscreen class="fullscreen" />
       <infodrop />
     </div>
@@ -30,7 +29,6 @@
 
 <script>
 import fullscreen from '@/components/fullscreen'
-import notice from '@/components/notice'
 import infodrop from './NavbarInfoDrop'
 import breadcrumb from '@/components/breadcrumb'
 import dayjs from 'dayjs'
@@ -39,7 +37,6 @@ export default {
   name: 'Sidebar',
   components: {
     fullscreen,
-    notice,
     infodrop,
     breadcrumb
   },

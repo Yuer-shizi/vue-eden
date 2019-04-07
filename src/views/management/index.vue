@@ -283,6 +283,7 @@ export default {
     //显示编辑界面
     handleEdit: function(index, row) {
       this.editForm = Object.assign({}, row)
+      this.editForm.type = row.type.toString()
       this.editFormVisible = true
     },
     //显示新增界面
@@ -296,10 +297,10 @@ export default {
           this.$confirm('确认提交吗？', '提示', {}).then(() => {
             this.editLoading = true
             let para = Object.assign({}, this.editForm)
-            editUser(para).then(() => {
+            editUser(para).then(response => {
               this.editLoading = false
               this.$message({
-                message: '提交成功',
+                message: response.message,
                 type: 'success'
               })
               this.$refs['editForm'].resetFields()
