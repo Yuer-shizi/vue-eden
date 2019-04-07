@@ -35,7 +35,9 @@
 </template>
 
 <script>
-// import http from '@/utils/http'
+import axios from 'axios'
+// import https from '@/utils/http'
+
 export default {
   name: 'demo',
   data() {
@@ -65,7 +67,7 @@ export default {
       }
     }
     return {
-      // number: this.$store.state.user.number,
+      number: this.$store.state.user.number,
       username: this.$store.state.user.name,
       avatarUrl: require('../../assets/images/avatar.jpg'),
       // avatarUrl: this.$store.state.user.avatar,
@@ -146,33 +148,55 @@ export default {
               password: this.temp.password.trim(),
               newPassword: this.temp.newpassword.trim()
             }
-            const response = await http({
-              url: '/user/change-password',
-              method: 'post',
-              data
+            const http = axios.create({
+              baseURL: 'http://localhost:8080',
+              timeout: 500000
             })
-            if (response.code === 200) {
-              this.$message({
-                message: response.message,
-                type: 'success',
-                duration: 10000,
-                showClose: true
-              })
-            } else {
-              this.$message({
-                message: response.message,
-                type: 'error',
-                duration: 10000,
-                showClose: true
-              })
-              this.loading = false
-            }
+            http.post(`/user/change-password`, data).then(res => {
+              const response = res.data
+              console.log(response)
+              if (response.code === 200) {
+                this.$message({
+                  message: response.message,
+                  type: 'success',
+                  duration: 10000,
+                  showClose: true
+                })
+                this.dialogFormVisible = false
+              } else {
+                this.$message({
+                  message: response.message,
+                  type: 'error',
+                  duration: 10000,
+                  showClose: true
+                })
+              }
+            })
+            // const response = http.post(
+            //   `/user/change-password`,
+            //   data
+            // )
+            // console.log(response)
+            // if (response.code === 200) {
+            //   this.$message({
+            //     message: response.message,
+            //     type: 'success',
+            //     duration: 10000,
+            //     showClose: true
+            //   })
+            // } else {
+            //   this.$message({
+            //     message: response.message,
+            //     type: 'error',
+            //     duration: 10000,
+            //     showClose: true
+            //   })
+            // }
           } catch (error) {
-            this.loading = false
+            console.log(error)
             throw new Error(error)
           }
         } else {
-          this.loading = false
           this.$message.error(this.$t('login.validfaild'))
         }
       })

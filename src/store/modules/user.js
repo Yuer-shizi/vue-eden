@@ -5,15 +5,15 @@ import http from '@/utils/http'
 
 const user = {
   state: {
-    token: '',
+    number: '',
     roles: [],
     name: '',
     speciality: '',
     introduction: ''
   },
   mutations: {
-    [types.SET_TOKEN]: (state, token) => {
-      state.token = token
+    [types.SET_NUMBER]: (state, number) => {
+      state.number = number
     },
     [types.SET_ROLES]: (state, roles) => {
       state.roles = roles
@@ -42,8 +42,8 @@ const user = {
             data
           })
           if (response.data) {
-            commit(types.SET_TOKEN, response.data.token)
-            setToken(response.data.token)
+            commit(types.SET_NUMBER, response.data.number)
+            setToken(response.data.number)
             Cookies.set('user', username)
           }
           resolve(response)
@@ -56,7 +56,7 @@ const user = {
       return new Promise(async (resolve, reject) => {
         try {
           await http({ url: '/user/logout', method: 'post' })
-          commit(types.SET_ROLES, '')
+          commit(types.SET_NUMBER, '')
           commit(types.SET_ROLES, [])
           Cookies.remove('user')
           removeToken()
@@ -68,7 +68,7 @@ const user = {
     },
     felogout({ commit }) {
       return new Promise(resolve => {
-        commit(types.SET_TOKEN, '')
+        commit(types.SET_NUMBER, '')
         removeToken()
         resolve()
       })
@@ -91,11 +91,13 @@ const user = {
                 ? ['admin']
                 : ['teacher']
           const name = response.data.username
+          const number = response.data.number
           const speciality = response.data.speciality
           const introduction = response.data.introduction
 
           commit(types.SET_ROLES, roles)
           commit(types.SET_NAME, name)
+          commit(types.SET_NUMBER, number)
           commit(types.SET_SPECIALITY, speciality)
           commit(types.SET_INTRODUCTION, introduction)
 

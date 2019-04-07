@@ -123,6 +123,10 @@ export default {
             required: true,
             message: '时间为空',
             trigger: 'blur'
+          },
+          {
+            validator: class1,
+            trigger: 'blur'
           }
         ],
         finded: [

@@ -11,7 +11,7 @@ const http = axios.create({
 // request 拦截器
 http.interceptors.request.use(
   config => {
-    if (store.getters.userInfo.token) {
+    if (store.getters.userInfo.number) {
       config.headers['eden-token'] = getToken()
     }
     return config
