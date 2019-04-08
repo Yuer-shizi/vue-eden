@@ -132,7 +132,7 @@ export default {
   methods: {
     // 时间显示转换
     formatDate: function(row) {
-      return new Date(row.date1 - 0).toLocaleDateString()
+      return new Date(row.date1).toLocaleDateString()
     },
     handleCurrentChange(val) {
       this.page = val
@@ -144,9 +144,7 @@ export default {
         page: this.page,
         size: 10,
         number: this.filters.number,
-        username: this.filters.username,
-        leaves: { username: this.filters.leave },
-        truants: { username: this.filters.truant }
+        username: this.filters.username
       }
       this.listLoading = true
       http
@@ -184,10 +182,6 @@ export default {
           this.$confirm('确认提交吗？', '提示', {}).then(() => {
             this.editLoading = true
             let para = Object.assign({}, this.editForm)
-            para.birth =
-              !para.birth || para.birth == ''
-                ? ''
-                : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd')
             editUser(para).then(() => {
               this.editLoading = false
               this.$message({

@@ -194,6 +194,7 @@ export default {
           .then(data => {
             if (data.code == 200) {
               this.loading = false
+              this.formData.leaves = []
               data.data.forEach(item => {
                 this.formData.leaves.push(item)
               })
@@ -229,11 +230,11 @@ export default {
               let para = Object.assign({}, this.formData)
               para.leaves = []
               for (let leave of this.formData.leaves) {
-                para.leaves.push({ number: leave })
+                para.leaves.push(leave)
               }
               para.truancys = []
               for (let truancy of this.formData.truancys) {
-                para.truancys.push({ number: truancy })
+                para.truancys.push(truancy)
               }
               http
                 .post(`/att/add`, para)
