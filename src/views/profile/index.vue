@@ -71,14 +71,20 @@
             <el-form-item label="用户名：">
               <el-input v-model="changeForm.username" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="学院：">
+              <el-input v-model="changeForm.department"></el-input>
+            </el-form-item>
+            <el-form-item label="专业：">
+              <el-input v-model="changeForm.speciality"></el-input>
+            </el-form-item>
             <el-form-item label="头像网址：">
-              <el-input v-model="changeForm.avatar" autocomplete="off"></el-input>
+              <el-input v-model="changeForm.avatar"></el-input>
             </el-form-item>
             <el-form-item label="邮箱：">
-              <el-input v-model="changeForm.email" autocomplete="off"></el-input>
+              <el-input v-model="changeForm.email"></el-input>
             </el-form-item>
             <el-form-item label="个人宣言：">
-              <el-input v-model="changeForm.introduction" autocomplete="off"></el-input>
+              <el-input v-model="changeForm.introduction"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
