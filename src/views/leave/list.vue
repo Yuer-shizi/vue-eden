@@ -12,9 +12,6 @@
 				<el-form-item>
 					<el-button type="primary" v-on:click="getLeaves">查询</el-button>
 				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" @click="handleAdd">新增</el-button>
-				</el-form-item>
 			</el-form>
 		</el-col>
 
@@ -108,68 +105,6 @@
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">修改</el-button>
-			</div>
-		</el-dialog>
-
-		<!--新增界面-->
-		<el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
-			<el-form :model="addForm" label-width="80px" :rules="formRules" ref="addForm">
-        <el-form-item label="申请人">
-          <el-input v-model="addForm.username" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="专业" prop="speciality">
-          <el-select v-model="addForm.speciality" placeholder="请选择专业">
-            <el-option v-for="sp in specialities" :key="sp" :label="sp" :value="sp"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="请假类型" prop="type">
-          <el-select v-model="addForm.type" placeholder="请选择类型">
-            <el-option label="病假" value="病假"></el-option>
-            <el-option label="事假" value="事假"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="请假时间" prop="date">
-          <el-col :span="11">
-            <el-date-picker type="number" ref="date1" placeholder="选择日期" v-model="addForm.date1" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
-          </el-col>
-          <el-col class="line" :span="2">--</el-col>
-          <el-col :span="10">
-            <el-select type="fixed-time" ref="class1" placeholder="第几节课" v-model="addForm.class1" style="width: 100%;">
-              <el-option label="第一节课" value="1"></el-option>
-              <el-option label="第二节课" value="2"></el-option>
-              <el-option label="第三节课" value="3"></el-option>
-              <el-option label="第四节课" value="4"></el-option>
-              <el-option label="第五节课" value="5"></el-option>
-              <el-option label="第六节课" value="6"></el-option>
-              <el-option label="第七节课" value="7"></el-option>
-              <el-option label="第八节课" value="8"></el-option>
-            </el-select>
-          </el-col>
-          <el-col class="line" :span="2">到</el-col>
-          <el-col :span="11">
-            <el-date-picker type="number" ref="date2" placeholder="选择日期" v-model="addForm.date2" :picker-options="pickerOptions" value-format="timestamp" style="width: 100%;"></el-date-picker>
-          </el-col>
-          <el-col class="line" :span="2">--</el-col>
-          <el-col :span="9">
-            <el-select type="fixed-time" ref="class2" placeholder="第几节课" v-model="addForm.class2" style="width: 100%;">
-              <el-option label="第一节课" value="1"></el-option>
-              <el-option label="第二节课" value="2"></el-option>
-              <el-option label="第三节课" value="3"></el-option>
-              <el-option label="第四节课" value="4"></el-option>
-              <el-option label="第五节课" value="5"></el-option>
-              <el-option label="第六节课" value="6"></el-option>
-              <el-option label="第七节课" value="7"></el-option>
-              <el-option label="第八节课" value="8"></el-option>
-            </el-select>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="请假原因" prop="reason">
-          <el-input type="textarea" v-model="addForm.reason"></el-input>
-        </el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="addFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
 	</section>

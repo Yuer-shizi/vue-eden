@@ -10,12 +10,6 @@
 					<el-input v-model="filters.username" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-input v-model="filters.leave" placeholder="请假人员"></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-input v-model="filters.truant" placeholder="旷课人员"></el-input>
-				</el-form-item>
-				<el-form-item>
 					<el-button type="primary" v-on:click="getAttendances">查询</el-button>
 				</el-form-item>
 				<el-form-item>
@@ -55,11 +49,11 @@
 
 		<!--编辑界面-->
 		<el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
-			<el-form :model="editForm" label-width="80px" :rules="formRules" ref="editForm">
+			<el-form :model="editForm" label-width="80px" ref="editForm">
 				<el-form-item label="记录人">
           <el-input v-model="editForm.username" disabled></el-input>
         </el-form-item>
-        <el-form-item label="班级" prop="speciality">
+        <el-form-item label="班级">
           <el-select v-model="editForm.speciality" placeholder="请选择班级" disabled>
             <el-option :label="editForm.speciality" :value="editForm.speciality"></el-option>
           </el-select>
@@ -82,7 +76,7 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="请假人员" prop="find">
+        <el-form-item label="请假人员">
           <el-select v-model="editForm.leaves" value-key="number" multiple placeholder="请选择">
             <el-option
               v-for="item in users"
@@ -118,18 +112,10 @@ import { getUserListBySpeciality } from '@/api/users'
 export default {
   name: 'attendances',
   data() {
-    const finded = (rule, value, callback) => {
-      if (!this.finded) {
-        callback(new Error('未查询请假人员'))
-      }
-      callback()
-    }
     return {
       filters: {
         number: '',
-        username: '',
-        leave: '',
-        truant: ''
+        username: ''
       },
       attendances: [],
       total: 0,
@@ -140,30 +126,7 @@ export default {
       editLoading: false,
       //编辑界面数据
       editForm: {},
-      users: {},
-      formRules: {
-        speciality: [
-          {
-            required: true,
-            message: '班级为空',
-            trigger: 'blur'
-          }
-        ],
-        date1: [
-          {
-            required: true,
-            message: '时间为空',
-            trigger: 'blur'
-          }
-        ],
-        finded: [
-          {
-            required: true,
-            validator: finded,
-            trigger: 'blur'
-          }
-        ]
-      }
+      users: {}
     }
   },
   methods: {

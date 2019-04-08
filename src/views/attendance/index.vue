@@ -10,7 +10,7 @@
           <el-option v-for="sp in specialities" :key="sp" :label="sp" :value="sp"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="时间" prop="date">
+      <el-form-item label="时间" prop="date1">
         <el-col :span="11">
           <el-date-picker type="date" ref="data1" placeholder="选择日期" v-model="formData.date1" :picker-options="pickerOptions" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
         </el-col>
@@ -28,7 +28,7 @@
           </el-select>
         </el-col>
       </el-form-item>
-      <el-form-item label="请假人员" prop="finded">
+      <el-form-item label="请假人员" prop="leaves">
         <el-select v-model="formData.leaves" value-key="number" multiple placeholder="请选择">
           <el-option
             v-for="item in users"
@@ -39,7 +39,7 @@
         </el-select>
         <el-button @click.native="findLeaver" type="primary" size="small" icon="el-icon-search">查询</el-button>
       </el-form-item>
-      <el-form-item label="旷课人员">
+      <el-form-item label="旷课人员" prop="truants">
         <el-select v-model="formData.truants" value-key="number" multiple placeholder="请选择">
           <el-option
             v-for="item in users"
@@ -129,7 +129,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        finded: [
+        leaves: [
           {
             validator: finded,
             trigger: 'blur'
@@ -227,6 +227,14 @@ export default {
           this.$confirm('确认提交吗？', '提示', {})
             .then(() => {
               let para = Object.assign({}, this.formData)
+              para.leaves = []
+              for (let leave of this.formData.leaves) {
+                para.leaves.push({ number: leave })
+              }
+              para.truancys = []
+              for (let truancy of this.formData.truancys) {
+                para.truancys.push({ number: truancy })
+              }
               http
                 .post(`/att/add`, para)
                 .then(data => {
