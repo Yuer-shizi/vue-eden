@@ -236,7 +236,7 @@ export default {
   methods: {
     // 身份显示转换
     formatType: function(row) {
-      return row.type == 0 ? '学生' : row.sex == 1 ? '老师' : '管理员'
+      return row.type == 0 ? '学生' : row.type == 1 ? '老师' : '管理员'
     },
     // 性别显示转换
     formatSex: function(row) {
